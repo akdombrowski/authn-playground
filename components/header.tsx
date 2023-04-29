@@ -37,8 +37,9 @@ export default function Header() {
                 height="5vh">
                 <Grid
                   item
-                  xxs={1}
-                  xs={4}
+                  xxxs={1}
+                  xxs={2}
+                  xs={6}
                   sm={7}
                   md={8}>
                   <Typography
@@ -55,8 +56,9 @@ export default function Header() {
                   item
                   container
                   justifyContent="flex-end"
-                  xxs={11}
-                  xs={8}
+                  xxxs={11}
+                  xxs={10}
+                  xs={6}
                   sm={5}
                   md={4}>
                   <Button

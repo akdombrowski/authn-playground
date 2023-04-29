@@ -18,11 +18,10 @@ export default function App({
 }: AppProps<{ session: Session }>) {
   return (
     <SessionProvider session={session}>
-      <CssBaseline enableColorScheme>
-        <ThemeProvider theme={theme}>
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </CssBaseline>
+      <ThemeProvider theme={theme}>
+        <CssBaseline enableColorScheme />
+        <Component {...pageProps} />
+      </ThemeProvider>
     </SessionProvider>
   );
 }

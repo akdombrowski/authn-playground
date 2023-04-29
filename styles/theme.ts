@@ -8,8 +8,9 @@ import {
 const unresponsiveFontsTheme = createTheme({
   breakpoints: {
     values: {
-      xxs: 0,
-      xs: 265,
+      xxxs: 0,
+      xxs: 200,
+      xs: 328,
     },
   },
   components: {
@@ -18,6 +19,9 @@ const unresponsiveFontsTheme = createTheme({
         body: themeParam.palette.mode === "dark" ? darkScrollbar() : null,
       }),
     },
+  },
+  palette: {
+    mode: "dark",
   },
 });
 
@@ -29,6 +33,7 @@ declare module "@mui/material/styles" {
   interface Theme {
     breakpoints: {
       values: {
+        xxxs: number;
         xxs: number;
       };
     };
@@ -37,6 +42,7 @@ declare module "@mui/material/styles" {
   interface ThemeOptions {
     breakpoints?: {
       values?: {
+        xxxs: number;
         xxs: number;
       };
     };
