@@ -18,3 +18,11 @@ next-env.d.ts
 .next
 .vercel
 .env*.local
+
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
