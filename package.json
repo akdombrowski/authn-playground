@@ -13,6 +13,11 @@
   },
   "author": "Anthony Dombrowski",
   "dependencies": {
+    "@emotion/react": "^11.10.8",
+    "@emotion/styled": "^11.10.8",
+    "@fontsource/roboto": "^4.5.8",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.12.2",
     "next": "latest",
     "next-auth": "latest",
     "react": "^18.2.0",
