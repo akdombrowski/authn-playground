@@ -393,6 +393,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@next-auth/xata-adapter@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@next-auth/xata-adapter@npm:0.2.2"
+  peerDependencies:
+    "@xata.io/client": ">=0.13.0"
+    next-auth: ^4
+  checksum: 34b72c6b35a32f9b4bc676bf7dde9d72e91b52e5238a7f12026c6a92b74ff7a51b4d53a79481bf179c442ee0a81e5aac250017e6e43bcea20b139c9e848ddefa
+  languageName: node
+  linkType: hard
+
 "@next/env@npm:13.3.1":
   version: 13.3.1
   resolution: "@next/env@npm:13.3.1"
@@ -1140,6 +1150,7 @@ __metadata:
     "@fontsource/roboto": ^4.5.8
     "@mui/icons-material": ^5.11.16
     "@mui/material": ^5.12.2
+    "@next-auth/xata-adapter": ^0.2.2
     "@types/node": ^18.16.3
     "@types/react": ^18.2.0
     next: latest
