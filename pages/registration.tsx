@@ -47,7 +47,9 @@ const login = ({ challenge }: { challenge: string }) => {
     return window.PublicKeyCredential;
   };
 
-  const createPubKey = async (email: string) => {
+  const createPubKey = async (
+    email: string
+  ): Promise<PublicKeyCredential | null> => {
     const challengeArray = challenge.split(",");
     const challengeUint8 = new Uint8Array(Buffer.from(challengeArray));
     console.log("challengeUint8");
@@ -96,7 +98,7 @@ const login = ({ challenge }: { challenge: string }) => {
 
     try {
       const pubKeyCred = await createCred(pubKeyOpt);
-      return pubKeyCred;
+      return pubKeyCred as PublicKeyCredential;
     } catch (e) {
       console.error("failed to create webauthn cred");
       console.error(e.message);
@@ -113,7 +115,7 @@ const login = ({ challenge }: { challenge: string }) => {
   const handleSubmit = async (event: SyntheticEvent) => {
     let data;
     let endpoint;
-    let pubKeyCred;
+    let pubKeyCred: PublicKeyCredential | null;
 
     // Stop the form from submitting and refreshing the page.
     event.preventDefault();
@@ -132,14 +134,26 @@ const login = ({ challenge }: { challenge: string }) => {
     }
 
     if (pubKeyCred) {
+      const { authenticatorAttachment, id, rawId, response, type } = pubKeyCred;
+      const rawIdArr = new Uint8Array(rawId);
+      const rawIdStr = rawIdArr.toString();
+      const attestationObjectArr = new Uint8Array(response.attestationObject);
+      const attestationObjectStr = attestationObjectArr.toString();
+      const clientDataJSONArr = new Uint8Array(response.clientDataJSON);
+      const clientDataJSONStr = clientDataJSONArr.toString();
+
       // Get data from the form and webauthn.
       data = {
         email: event.target.email.value,
         pubKeyCred: {
+          authenticatorAttachment: pubKeyCred.authenticatorAttachment,
           id: pubKeyCred.id,
-          rawId: pubKeyCred.rawId,
-          response: pubKeyCred.response,
-          type: pubKeyCred.type,
+          rawId: rawIdStr,
+          response: {
+            attestationObj: attestationObjectStr,
+            clientDataJSON: clientDataJSONStr,
+          },
+          type: type,
         },
       };
 
