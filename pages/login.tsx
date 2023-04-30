@@ -22,7 +22,7 @@ import type {
   InferGetServerSidePropsType,
 } from "next";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 import { getProviders, signIn, signOut, useSession } from "next-auth/react";
 
@@ -123,30 +123,6 @@ const login = ({
             container
             xs={12}
             justifyContent="center">
-            <NavBtn
-              variant="contained"
-              size="small"
-              href={`/api/auth/signin`}
-              onClick={(e: SyntheticEvent) => {
-                e.preventDefault();
-                signIn();
-              }}>
-              Provider Login
-            </NavBtn>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            mt={5}>
-            <Divider variant="middle">
-              <Chip label="OR" />
-            </Divider>
-          </Grid>
-          <Grid
-            item
-            container
-            xs={12}
-            justifyContent="center">
             <Box
               sx={{
                 marginTop: 3,
@@ -227,7 +203,8 @@ const login = ({
           <Grid
             item
             container
-            xs={12}>
+            xs={12}
+            pt={3}>
             {Object.values(providers).map((provider) => (
               <Grid
                 item

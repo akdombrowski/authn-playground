@@ -74,8 +74,13 @@ export default function Header() {
                     legacyBehavior>
                     <NavBtn
                       variant="contained"
-                      size="small">
-                      <Typography variant="subtitle2">Login</Typography>
+                      size="small"
+                      href={`/api/auth/signin`}
+                      onClick={(e: SyntheticEvent) => {
+                        e.preventDefault();
+                        signIn();
+                      }}>
+                      Login
                     </NavBtn>
                   </Link>
                 </Grid>
