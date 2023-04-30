@@ -158,14 +158,14 @@ const login = ({ challenge }: { challenge: string }) => {
       };
 
       // API endpoint where we send form data.
-      endpoint = "/api/auth/webauthn";
+      endpoint = "/api/webauthn";
     } else if (event.target.password.value) {
       // Get data from the form.
       data = {
         email: event.target.email.value,
         pubKeyCred: event.target.password.value,
       };
-      endpoint = "/api/auth/password";
+      endpoint = "/api/password";
     } else {
       console.error("No credential entered");
       return;
