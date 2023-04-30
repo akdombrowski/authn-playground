@@ -6,7 +6,7 @@ import GithubProvider from "next-auth/providers/github";
 import TwitterProvider from "next-auth/providers/twitter";
 import Auth0Provider from "next-auth/providers/auth0";
 import { XataAdapter } from "@next-auth/xata-adapter";
-import { XataClient } from "../../db/xata"; // or wherever you've chosen to create the client
+import { XataClient } from "../../../db/xata"; // or wherever you've chosen to create the client
 
 const client = new XataClient();
 
