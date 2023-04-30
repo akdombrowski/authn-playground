@@ -7,9 +7,6 @@ const sendVerificationRequest = async (params) => {
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
   const apiInstance = new SibApiV3Sdk.AccountApi();
-  const window = new JSDOM("").window;
-  const purify = DOMPurify(window);
-  const cleanIdentifier = purify.sanitize(identifier);
   // Configure API key authorization: apiKey
 
   apiInstance.setApiKey(

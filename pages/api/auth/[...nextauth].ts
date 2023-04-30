@@ -11,6 +11,9 @@ import { XataClient } from "../../../db/xata"; // or wherever you've chosen to c
 
 import sendVerificationRequest from "../../../email/sendEmailVerificationRequest";
 
+import { JSDOM } from "jsdom";
+import DOMPurify from "dompurify";
+
 const client = new XataClient();
 
 // For more information on each option (and a full list of options) go to
@@ -25,6 +28,18 @@ export const authOptions: NextAuthOptions = {
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
       maxAge: 30 * 60, // How long email links are valid for (30 min)
+      normalizeIdentifier(identifier: string): string {
+        const window = new JSDOM("").window;
+        const purify = DOMPurify(window);
+        const cleanIdentifier = purify.sanitize(identifier);
+        // Get the first two elements only,
+        // separated by `@` from user input.
+        let [local, domain] = cleanIdentifier.toLowerCase().trim().split("@");
+        // The part before "@" can contain a ","
+        // but we remove it on the domain part
+        domain = domain.split(",")[0];
+        return `${local}@${domain}`;
+      },
       sendVerificationRequest({
         identifier: email,
         url,
