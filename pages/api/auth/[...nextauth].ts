@@ -31,7 +31,6 @@ export const authOptions: NextAuthOptions = {
         provider: { server, from },
         theme,
       }) {
-        /* your function */
         sendVerificationRequest({ identifier, url, provider, theme });
       },
     }),

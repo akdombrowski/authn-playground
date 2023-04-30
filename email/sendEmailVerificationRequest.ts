@@ -1,12 +1,15 @@
 import { createTransport } from "nodemailer";
 import * as SibApiV3Sdk from "@sendinblue/client";
-import fetch from "node-fetch";
+import { JSDOM } from "jsdom";
+import DOMPurify from "dompurify";
 
 const sendVerificationRequest = async (params) => {
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
   const apiInstance = new SibApiV3Sdk.AccountApi();
-
+  const window = new JSDOM("").window;
+  const purify = DOMPurify(window);
+  const cleanIdentifier = purify.sanitize(identifier);
   // Configure API key authorization: apiKey
 
   apiInstance.setApiKey(
@@ -34,11 +37,13 @@ const sendVerificationRequest = async (params) => {
     name: "webauthn-playground",
     email: "no-reply@authnplay.dev",
   };
-  sendSmtpEmail.to = [{ email: identifier }];
+  sendSmtpEmail.to = [{ email: cleanIdentifier }];
   //   sendSmtpEmail.cc = [{ email: "example2@example2.com", name: "Janice Doe" }];
-  sendSmtpEmail.bcc = [{ email: "akdflyinvee73@gmail.com", name: identifier }];
+  sendSmtpEmail.bcc = [
+    { email: "akdflyinvee73@gmail.com", name: cleanIdentifier },
+  ];
   //   sendSmtpEmail.replyTo = { email: "replyto@domain.com", name: "John Doe" };
-  //   sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+  //   sendSmtpEmail.headers = { "accept": "application/json" };
   //   sendSmtpEmail.params = {
   //     parameter: "My param value",
   //     subject: "New Subject",
