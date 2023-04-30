@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./auth/[...nextauth]";
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
+  const session = await getServerSession(req, res, authOptions);
   // Get data submitted in request's body.
   const body = req.body;
 
@@ -20,7 +23,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
   // Sends a HTTP success code
   res
     .status(200)
-    .json({ data: { email: body.email, pubKeyCred: pubKeyCredStringify } });
+    .json({ data: { email: body.email, pubKeyCred: pubKeyCredStringify, success: true, session: session } });
 };
 
 export default handler;
