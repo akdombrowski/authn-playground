@@ -16,11 +16,12 @@ export const authOptions: NextAuthOptions = {
   // https://next-auth.js.org/configuration/providers/oauth
   adapter: XataAdapter(client),
   providers: [
-    EmailProvider: ({
+    EmailProvider({
       id: "email",
+      name: "email",
       server: process.env.EMAIL_SERVER,
-    from: process.env.EMAIL_FROM,
-    maxAge: 30 * 60, // How long email links are valid for (30 min)
+      from: process.env.EMAIL_FROM,
+      maxAge: 30 * 60, // How long email links are valid for (30 min)
     }),
     Auth0Provider({
       clientId: process.env.AUTH0_ID,
