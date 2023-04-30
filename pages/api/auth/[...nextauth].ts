@@ -52,6 +52,9 @@ export const authOptions: NextAuthOptions = {
     },
   },
   debug: false,
+  pages: {
+    signIn: "/login",
+  },
   theme: {
     colorScheme: "dark",
     brandColor: "#283845",
