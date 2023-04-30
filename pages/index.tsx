@@ -9,7 +9,11 @@ export default function IndexPage() {
         <Grid
           item
           xs={12}>
-          <Typography variant="h1">NextAuth.js Example</Typography>
+          <Typography
+            variant="h2"
+            textAlign="center">
+            NextAuth.js Example
+          </Typography>
         </Grid>
         <Grid
           item

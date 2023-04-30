@@ -1,11 +1,18 @@
+import { forwardRef } from "react";
+
 import Link from "next/link";
+
 import { signIn, signOut, useSession } from "next-auth/react";
+
 import styles from "./header.module.css";
+
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+
+import NavBtn from "../components/navBtn";
 
 // The approach used in this component shows how to build a sign in and sign out
 // component that works on pages which support both client and server side
@@ -61,16 +68,16 @@ export default function Header() {
                   xs={6}
                   sm={5}
                   md={4}>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    href={`/api/auth/signin`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      signIn();
-                    }}>
-                    <Typography variant="subtitle2">Provider Login</Typography>
-                  </Button>
+                  <Link
+                    passHref
+                    href="/login"
+                    legacyBehavior>
+                    <NavBtn
+                      variant="contained"
+                      size="small">
+                      <Typography variant="subtitle2">Login</Typography>
+                    </NavBtn>
+                  </Link>
                 </Grid>
               </Grid>
             )}
