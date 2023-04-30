@@ -931,6 +931,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nodemailer@npm:^6.9.1":
+  version: 6.9.1
+  resolution: "nodemailer@npm:6.9.1"
+  checksum: b1b9670afc170b4454665abae3fc9acd7e781adb9f579d1c2cd991bf75c647ebe345593f8a057e48d7bf9e4c9a9218869f87db8fb7171c614f557000ab654572
+  languageName: node
+  linkType: hard
+
 "oauth@npm:^0.9.15":
   version: 0.9.15
   resolution: "oauth@npm:0.9.15"
@@ -1165,6 +1172,7 @@ __metadata:
     "@xata.io/client": ^0.23.5
     next: latest
     next-auth: latest
+    nodemailer: ^6.9.1
     react: ^18.2.0
     react-dom: ^18.2.0
     typescript: ^5.0.4
