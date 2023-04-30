@@ -5,8 +5,11 @@ import FacebookProvider from "next-auth/providers/facebook";
 import GithubProvider from "next-auth/providers/github";
 import TwitterProvider from "next-auth/providers/twitter";
 import Auth0Provider from "next-auth/providers/auth0";
+
 import { XataAdapter } from "@next-auth/xata-adapter";
 import { XataClient } from "../../../db/xata"; // or wherever you've chosen to create the client
+
+import sendVerificationRequest from "../../../email/sendEmailVerificationRequest";
 
 const client = new XataClient();
 
@@ -22,6 +25,15 @@ export const authOptions: NextAuthOptions = {
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
       maxAge: 30 * 60, // How long email links are valid for (30 min)
+      sendVerificationRequest({
+        identifier: email,
+        url,
+        provider: { server, from },
+        theme,
+      }) {
+        /* your function */
+        sendVerificationRequest({ identifier, url, provider, theme });
+      },
     }),
     Auth0Provider({
       clientId: process.env.AUTH0_ID,
