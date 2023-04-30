@@ -9,7 +9,7 @@ import Auth0Provider from "next-auth/providers/auth0";
 import { XataAdapter } from "@next-auth/xata-adapter";
 import { XataClient } from "../../../db/xata"; // or wherever you've chosen to create the client
 
-import sendVerificationRequest from "../../../email/sendEmailVerificationRequest";
+import sendVerReq from "../../../email/sendEmailVerificationRequest";
 
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
         provider: { server, from },
         theme,
       }) {
-        sendVerificationRequest({ identifier, url, provider, theme });
+        sendVerReq({ identifier, url, provider, theme });
       },
     }),
     Auth0Provider({

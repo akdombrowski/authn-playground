@@ -3,7 +3,7 @@ import * as SibApiV3Sdk from "@sendinblue/client";
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
 
-const sendVerificationRequest = async (params) => {
+const sendVerReq = async (params) => {
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
   const apiInstance = new SibApiV3Sdk.AccountApi();
@@ -138,4 +138,4 @@ function text({ url, host }: { url: string; host: string }) {
   return `Sign in to ${host}\n${url}\n\n`;
 }
 
-export default sendVerificationRequest;
+export default sendVerReq;
