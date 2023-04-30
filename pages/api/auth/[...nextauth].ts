@@ -5,7 +5,7 @@ import GithubProvider from "next-auth/providers/github";
 import TwitterProvider from "next-auth/providers/twitter";
 import Auth0Provider from "next-auth/providers/auth0";
 import { XataAdapter } from "@next-auth/xata-adapter";
-import { XataClient } from "../../../xata"; // or wherever you've chosen to create the client
+import { XataClient } from "../../db/xata"; // or wherever you've chosen to create the client
 
 const client = new XataClient();
 
@@ -39,8 +39,8 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 1 day
+    strategy: "database",
+    maxAge: 5 * 60, // 5 min
   },
   callbacks: {
     async jwt({ token, account }) {
