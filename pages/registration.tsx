@@ -38,7 +38,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 const login = ({ challenge }: { challenge: string }) => {
   const { data: session, status } = useSession();
-  const [webAuthnSuccess, setWebAuthnSuccess] = useState(false);
+  const [savedCred, setSavedCred] = useState(false);
   const [webAuthnCred, setWebAuthnCred] = useState("");
 
   console.log(challenge.split(","));
@@ -47,11 +47,17 @@ const login = ({ challenge }: { challenge: string }) => {
     return window.PublicKeyCredential;
   };
 
-  const createPubKey = (email: string) => {
-    const challengeArray = new Uint8Array(challenge.toSplit(","));
-    const pubKey = {
+  const createPubKey = async (email: string) => {
+    const challengeArray = challenge.split(",");
+    const challengeUint8 = new Uint8Array(Buffer.from(challengeArray));
+    console.log("challengeUint8");
+    console.log(challengeUint8.buffer);
+    const userID = new Uint8Array(16);
+    self.crypto.getRandomValues(userID);
+
+    const pubKeyOpt = {
       // The challenge is produced by the server; see the Security Considerations
-      challenge: challengeArray,
+      challenge: challengeUint8,
 
       // Relying Party:
       rp: {
@@ -60,21 +66,14 @@ const login = ({ challenge }: { challenge: string }) => {
 
       // User:
       user: {
-        id: Uint8Array.from(
-          window.atob("MIIBkzCCATigAwIBAjCCAZMwggE4oAMCAQIwggGTMII="),
-          (c) => c.charCodeAt(0)
-        ),
+        id: userID,
         name: email,
         displayName: email,
       },
 
       // This Relying Party will accept either an ES256 or RS256 credential, but
-      // prefers an ES256 credential.
+      // prefers an RS256 credential.
       pubKeyCredParams: [
-        {
-          type: "public-key",
-          alg: -7, // "ES256" as registered in the IANA COSE Algorithms registry
-        },
         {
           type: "public-key",
           alg: -257, // Value registered by this specification for "RS256"
@@ -82,64 +81,84 @@ const login = ({ challenge }: { challenge: string }) => {
       ],
 
       authenticatorSelection: {
-        // Try to use UV if possible. This is also the default.
-        userVerification: "preferred",
+        // UV required.
+        userVerification: "required",
       },
 
       timeout: 300000, // 5 minutes
       excludeCredentials: [
         // Don’t re-register any authenticator that has one of these credentials
-        {
-          id: Uint8Array.from(
-            window.atob("ufJWp8YGlibm1Kd9XQBWN1WAw2jy5In2Xhon9HAqcXE="),
-            (c) => c.charCodeAt(0)
-          ),
-          type: "public-key",
-        },
-        {
-          id: Uint8Array.from(
-            window.atob("E/e1dhZc++mIsz4f9hb6NifAzJpF1V4mEtRlIPBiWdY="),
-            (c) => c.charCodeAt(0)
-          ),
-          type: "public-key",
-        },
       ],
 
       // Make excludeCredentials check backwards compatible with credentials registered with U2F
-      extensions: { appidExclude: "https://webauthnplayground.com" },
+      extensions: {},
     };
-    createCred(pubKey);
+
+    try {
+      const pubKeyCred = await createCred(pubKeyOpt);
+      return pubKeyCred;
+    } catch (e) {
+      console.error("failed to create webauthn cred");
+      console.error(e.message);
+      return null;
+    }
   };
 
-  const createCred = (pubKey) => {
+  const createCred = async (pubKeyOpt) => {
     // Note: The following call will cause the authenticator to display UI.
-    navigator.credentials
-      .create({ publicKey })
-      .then(function (newCredentialInfo) {
-        // Send new credential info to server for verification and registration.
-      })
-      .catch(function (err) {
-        // No acceptable authenticator or user refused consent. Handle appropriately.
-      });
+    return navigator.credentials.create({ publicKey: pubKeyOpt });
   };
 
   // Handles the submit event on form submit.
   const handleSubmit = async (event: SyntheticEvent) => {
+    let data;
+    let endpoint;
+    let pubKeyCred;
+
     // Stop the form from submitting and refreshing the page.
     event.preventDefault();
 
-    // Get data from the form.
-    const data = {
-      email: event.target.email.value,
-      password: event.target.password.value,
-    };
+    try {
+      console.log("event.target.email.value");
+      console.log(event.target.email.value);
+
+      pubKeyCred = await createPubKey(event.target.email.value);
+
+      console.log("pubKeyCred");
+      console.log(pubKeyCred);
+      console.log(JSON.stringify(pubKeyCred));
+    } catch (e) {
+      console.error("WebAuthn failed:", e.message);
+    }
+
+    if (pubKeyCred) {
+      // Get data from the form and webauthn.
+      data = {
+        email: event.target.email.value,
+        pubKeyCred: {
+          id: pubKeyCred.id,
+          rawId: pubKeyCred.rawId,
+          response: pubKeyCred.response,
+          type: pubKeyCred.type,
+        },
+      };
+
+      // API endpoint where we send form data.
+      endpoint = "/api/auth/webauthn";
+    } else if (event.target.password.value) {
+      // Get data from the form.
+      data = {
+        email: event.target.email.value,
+        pubKeyCred: event.target.password.value,
+      };
+      endpoint = "/api/auth/password";
+    } else {
+      console.error("No credential entered");
+      return;
+    }
 
     // Send the data to the server in JSON format.
-    const JSONdata = JSON.stringify(data);
-
-    // API endpoint where we send form data.
-    const endpoint = "/api/webauthn";
-
+    const jsonData = JSON.stringify(data);
     // Form the request for sending data to the server.
     const options = {
       // The method is POST because we are sending data.
@@ -149,7 +168,7 @@ const login = ({ challenge }: { challenge: string }) => {
         "Content-Type": "application/json",
       },
       // Body of the request is the JSON data we created above.
-      body: JSONdata,
+      body: jsonData,
     };
 
     // Send the form data to our forms API on Vercel and get a response.
@@ -158,9 +177,8 @@ const login = ({ challenge }: { challenge: string }) => {
     // Get the response data from server as JSON.
     // If server returns the name submitted, that means the form works.
     const result = await response.json();
-
-    setWebAuthnSuccess(result.data?.success);
-    setWebAuthnCred(result.data);
+    console.log("result");
+    console.log(result);
   };
 
   return (
@@ -168,7 +186,7 @@ const login = ({ challenge }: { challenge: string }) => {
       container
       py={5}
       px={3}>
-      {webAuthnSuccess || session ? (
+      {savedCred || session ? (
         <Grid
           item
           container
