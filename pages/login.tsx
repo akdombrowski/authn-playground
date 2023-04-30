@@ -17,9 +17,35 @@ import Chip from "@mui/material/Chip";
 
 import NavBtn from "../components/navBtn";
 
-import { signIn, signOut, useSession } from "next-auth/react";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+} from "next";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]";
 
-const login = () => {
+import { getProviders, signIn, signOut, useSession } from "next-auth/react";
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  // If the user is already logged in, redirect.
+  // Note: Make sure not to redirect to the same page
+  // To avoid an infinite loop!
+  if (session) {
+    return { redirect: { destination: "/protected" } };
+  }
+
+  const providers = await getProviders();
+
+  return {
+    props: { providers: providers ?? [] },
+  };
+}
+
+const login = ({
+  providers,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { data: session, status } = useSession();
   const [webAuthnSuccess, setWebAuthnSuccess] = useState(false);
   const [webAuthnCred, setWebAuthnCred] = useState("");
@@ -197,6 +223,22 @@ const login = () => {
                 </Grid>
               </Box>
             </Box>
+          </Grid>
+          <Grid
+            item
+            container
+            xs={12}>
+            {Object.values(providers).map((provider) => (
+              <Grid
+                item
+                container
+                xs={12}
+                key={provider.name}>
+                <Button onClick={() => signIn(provider.id)}>
+                  Sign in with {provider.name}
+                </Button>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
       )}
