@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://Anthony-Dombrowski-s-workspace-vnjf6m.us-west-2.xata.sh/db/webauthn-playground",
+  "codegen": {
+    "output": "pages/db/xata.ts"
+  }
+}

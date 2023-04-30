@@ -564,6 +564,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@xata.io/client@npm:^0.23.5":
+  version: 0.23.5
+  resolution: "@xata.io/client@npm:0.23.5"
+  peerDependencies:
+    typescript: ">=4.5"
+  checksum: 4291d8d0e2a77f005416027a61f410934b4a60ff15a52aef1b0177118f12d5c59f78e8b73fde4a0d1fa80a563f0583572031839e7bdb49292a832427f3389c27
+  languageName: node
+  linkType: hard
+
 "ansi-styles@npm:^3.2.1":
   version: 3.2.1
   resolution: "ansi-styles@npm:3.2.1"
@@ -1153,6 +1162,7 @@ __metadata:
     "@next-auth/xata-adapter": ^0.2.2
     "@types/node": ^18.16.3
     "@types/react": ^18.2.0
+    "@xata.io/client": ^0.23.5
     next: latest
     next-auth: latest
     react: ^18.2.0

@@ -4,11 +4,16 @@ import FacebookProvider from "next-auth/providers/facebook";
 import GithubProvider from "next-auth/providers/github";
 import TwitterProvider from "next-auth/providers/twitter";
 import Auth0Provider from "next-auth/providers/auth0";
+import { XataAdapter } from "@next-auth/xata-adapter";
+import { XataClient } from "../../../xata"; // or wherever you've chosen to create the client
+
+const client = new XataClient();
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export const authOptions: NextAuthOptions = {
   // https://next-auth.js.org/configuration/providers/oauth
+  adapter: XataAdapter(client),
   providers: [
     Auth0Provider({
       clientId: process.env.AUTH0_ID,

@@ -19,6 +19,7 @@
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.2",
     "@next-auth/xata-adapter": "^0.2.2",
+    "@xata.io/client": "^0.23.5",
     "next": "latest",
     "next-auth": "latest",
     "react": "^18.2.0",
