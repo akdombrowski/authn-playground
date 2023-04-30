@@ -90,7 +90,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  debug: false,
+  debug: process.env.DEBUG ?? false,
   pages: {
     signIn: "/login",
   },
