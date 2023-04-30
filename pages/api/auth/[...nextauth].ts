@@ -32,6 +32,9 @@ export const authOptions: NextAuthOptions = {
         const window = new JSDOM("").window;
         const purify = DOMPurify(window);
         const cleanIdentifier = purify.sanitize(identifier);
+        console.log("clean identifier");
+        console.log(cleanIdentifier);
+
         // Get the first two elements only,
         // separated by `@` from user input.
         let [local, domain] = cleanIdentifier.toLowerCase().trim().split("@");
@@ -46,7 +49,13 @@ export const authOptions: NextAuthOptions = {
         provider: { server, from },
         theme,
       }) {
-        sendVerReq({ identifier, url, provider, theme });
+        console.log("sendVerificationRequest");
+        console.log("identifier");
+        console.log(email);
+        console.log("sendVerificationRequest");
+
+        const provider = { server, from };
+        sendVerReq({ email, url, provider, theme });
       },
     }),
     Auth0Provider({
@@ -91,6 +100,17 @@ export const authOptions: NextAuthOptions = {
     },
   },
   debug: process.env.DEBUG ?? false,
+  logger: {
+    error(code, metadata) {
+      console.log(code, metadata);
+    },
+    warn(code) {
+      console.log(code);
+    },
+    debug(code, metadata) {
+      console.log(code, metadata);
+    },
+  },
   pages: {
     signIn: "/login",
   },

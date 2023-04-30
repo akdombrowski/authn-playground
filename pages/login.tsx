@@ -24,7 +24,13 @@ import type {
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./api/auth/[...nextauth]";
 
-import { getProviders, signIn, signOut, useSession } from "next-auth/react";
+import {
+  getProviders,
+  getCsrfToken,
+  signIn,
+  signOut,
+  useSession,
+} from "next-auth/react";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
@@ -38,53 +44,60 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const providers = await getProviders();
 
+  const csrfToken = await getCsrfToken(context);
+
   return {
-    props: { providers: providers ?? [] },
+    props: { providers: providers ?? [], csrfToken },
   };
 }
 
 const login = ({
   providers,
+  csrfToken,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { data: session, status } = useSession();
   const [webAuthnSuccess, setWebAuthnSuccess] = useState(false);
   const [webAuthnCred, setWebAuthnCred] = useState("");
+
   // Handles the submit event on form submit.
   const handleSubmit = async (event: SyntheticEvent) => {
     // Stop the form from submitting and refreshing the page.
     event.preventDefault();
-    signIn("email");
 
-    // // Get data from the form.
-    // const data = {
-    //   email: event.target.email.value,
-    //   password: event.target.password.value,
-    // };
+    const email = event.target.email.value;
+    console.log("email");
+    console.log(email);
 
-    // // Send the data to the server in JSON format.
-    // const JSONdata = JSON.stringify(data);
+    // Get data from the form.
+    const data = {
+      email,
+      csrfToken,
+    };
 
-    // // API endpoint where we send form data.
-    // const endpoint = "/api/webauthn";
+    // Send the data to the server in JSON format.
+    const JSONdata = JSON.stringify(data);
 
-    // // Form the request for sending data to the server.
-    // const options = {
-    //   // The method is POST because we are sending data.
-    //   method: "POST",
-    //   // Tell the server we're sending JSON.
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   // Body of the request is the JSON data we created above.
-    //   body: JSONdata,
-    // };
+    // API endpoint where we send form data.
+    const endpoint = "/api/auth/signin/email";
 
-    // // Send the form data to our forms API on Vercel and get a response.
-    // const response = await fetch(endpoint, options);
+    // Form the request for sending data to the server.
+    const options = {
+      // The method is POST because we are sending data.
+      method: "POST",
+      // Tell the server we're sending JSON.
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // Body of the request is the JSON data we created above.
+      body: JSONdata,
+    };
 
-    // // Get the response data from server as JSON.
-    // // If server returns the name submitted, that means the form works.
-    // const result = await response.json();
+    // Send the form data and get a response.
+    const response = await fetch(endpoint, options);
+
+    // Get the response data from server as JSON.
+    // If server returns the name submitted, that means the form works.
+    const result = await response.json();
 
     // setWebAuthnSuccess(result.data?.success);
     // setWebAuthnCred(result.data);
