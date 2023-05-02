@@ -1,4 +1,3 @@
-import { createTransport } from "nodemailer";
 import * as SibApiV3Sdk from "@sendinblue/client";
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
