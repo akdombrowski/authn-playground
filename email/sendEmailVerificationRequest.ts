@@ -41,24 +41,6 @@ const sendVerReq = async (params) => {
   }
 };
 
-async function sendVerificationRequestNodemailer(params) {
-  const { identifier, url, provider, theme } = params;
-  const { host } = new URL(url);
-  // NOTE: You are not required to use `nodemailer`, use whatever you want.
-  const transport = createTransport(provider.server);
-  const result = await transport.sendMail({
-    to: identifier,
-    from: provider.from,
-    subject: `Sign in to ${host}`,
-    text: text({ url, host }),
-    html: html({ url, host, theme }),
-  });
-  const failed = result.rejected.concat(result.pending).filter(Boolean);
-  if (failed.length) {
-    throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
-  }
-}
-
 /**
  * Email HTML body
  * Insert invisible space into domains from being turned into a hyperlink by email

@@ -24,6 +24,7 @@ export const authOptions: NextAuthOptions = {
   providers: [
     EmailProvider({
       id: "email",
+      type:"email",
       name: "email",
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
