@@ -30,21 +30,8 @@ const theme = createTheme(unresponsiveFontsTheme);
 export default theme;
 
 declare module "@mui/material/styles" {
-  interface Theme {
-    breakpoints: {
-      values: {
-        xxxs: number;
-        xxs: number;
-      };
-    };
-  }
-  // allow configuration using `createTheme`
-  interface ThemeOptions {
-    breakpoints?: {
-      values?: {
-        xxxs: number;
-        xxs: number;
-      };
-    };
+  interface BreakpointOverrides {
+    xxxs: true;
+    xxs: true;
   }
 }

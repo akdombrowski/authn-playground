@@ -13,11 +13,10 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 
-import NavBtn from "../components/navBtn";
-
 import { signIn, signOut, useSession } from "next-auth/react";
 
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
+import { GetServerSideProps } from "next";
+import NextLinkComposed from "../components/NextLinkComposed";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { randomFillSync } = await import("node:crypto");
@@ -197,8 +196,9 @@ const login = ({ challenge }: { challenge: string }) => {
           <Grid
             item
             xs={12}>
-            <NavBtn
-              href="/protected"
+            <Button
+              component={NextLinkComposed}
+              to={{ pathname: "/protected" }}
               variant="contained"
             />
           </Grid>
@@ -213,16 +213,17 @@ const login = ({ challenge }: { challenge: string }) => {
             container
             xs={12}
             justifyContent="center">
-            <NavBtn
+            <Button
+              component={NextLinkComposed}
               variant="contained"
               size="small"
-              href={`/api/auth/signin`}
+              pathname={{ pathname: "/api/auth/signin" }}
               onClick={(e: SyntheticEvent) => {
                 e.preventDefault();
                 signIn();
               }}>
               Provider Login
-            </NavBtn>
+            </Button>
           </Grid>
           <Grid
             item
@@ -294,20 +295,11 @@ const login = ({ challenge }: { challenge: string }) => {
                   Sign In
                 </Button>
                 <Grid container>
-                  <Grid
-                    item
-                    xs>
-                    <Link
-                      href="#"
-                      variant="body2">
-                      Forgot password?
-                    </Link>
-                  </Grid>
                   <Grid item>
                     <Link
-                      href="#"
+                      href="/login"
                       variant="body2">
-                      {"Don't have an account? Sign Up"}
+                      {"Already have an account? Sign In"}
                     </Link>
                   </Grid>
                 </Grid>

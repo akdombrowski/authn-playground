@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -9,8 +8,9 @@ import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
-import NavBtn from "../components/navBtn";
+import NextLinkComposed from "./NextLinkComposed";
 
 // The approach used in this component shows how to build a sign in and sign out
 // component that works on pages which support both client and server side
@@ -70,16 +70,17 @@ export default function Header() {
                     passHref
                     href="/login"
                     legacyBehavior>
-                    <NavBtn
+                    <Button
+                      component={NextLinkComposed}
                       variant="contained"
                       size="small"
-                      href={`/api/auth/signin`}
+                      to={{ pathname: "/api/auth/signin" }}
                       onClick={(e: SyntheticEvent) => {
                         e.preventDefault();
                         signIn();
                       }}>
                       Login
-                    </NavBtn>
+                    </Button>
                   </Link>
                 </Grid>
               </Grid>
@@ -100,7 +101,7 @@ export default function Header() {
                 <a
                   href={`/api/auth/signout`}
                   className={styles.button}
-                  onClick={(e) => {
+                  onClick={(e: { preventDefault: () => void }) => {
                     e.preventDefault();
                     signOut();
                   }}>
