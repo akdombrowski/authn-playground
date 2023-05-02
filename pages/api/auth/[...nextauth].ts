@@ -33,8 +33,6 @@ export const authOptions: NextAuthOptions = {
         const window = new JSDOM("").window;
         const purify = DOMPurify(window);
         const cleanIdentifier = purify.sanitize(identifier);
-        console.log("clean identifier");
-        console.log(cleanIdentifier);
 
         // Get the first two elements only,
         // separated by `@` from user input.
