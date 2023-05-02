@@ -19,12 +19,14 @@ const client = new XataClient();
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export const authOptions: NextAuthOptions = {
-  // https://next-auth.js.org/configuration/providers/oauth
+  // set env var if want to turn on debug and don't commit the env file to git
+  debug: process.env.DEBUG ?? false,
   adapter: XataAdapter(client),
+  // https://next-auth.js.org/configuration/providers/oauth
   providers: [
     EmailProvider({
       id: "email",
-      type:"email",
+      type: "email",
       name: "email",
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
@@ -93,7 +95,6 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  debug: process.env.DEBUG ?? false,
   logger: {
     error(code, metadata) {
       console.log(code, metadata);
