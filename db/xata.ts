@@ -100,7 +100,7 @@ const DatabaseClient = buildClient();
 
 const defaultOptions = {
   databaseURL:
-    "https://Anthony-Dombrowski-s-workspace-vnjf6m.us-west-2.xata.sh/db/webauthn-playground",
+    "https://Anthony-Dombrowski-s-workspace-vnjf6m.us-west-2.xata.sh/db/authn-play",
 };
 
 export class XataClient extends DatabaseClient<DatabaseSchema> {
