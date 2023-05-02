@@ -1310,9 +1310,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdom@npm:^21.1.1":
-  version: 21.1.1
-  resolution: "jsdom@npm:21.1.1"
+"jsdom@npm:^21.1.2":
+  version: 21.1.2
+  resolution: "jsdom@npm:21.1.2"
   dependencies:
     abab: ^2.0.6
     acorn: ^8.8.2
@@ -1327,7 +1327,7 @@ __metadata:
     http-proxy-agent: ^5.0.0
     https-proxy-agent: ^5.0.1
     is-potential-custom-element-name: ^1.0.1
-    nwsapi: ^2.2.2
+    nwsapi: ^2.2.4
     parse5: ^7.1.2
     rrweb-cssom: ^0.6.0
     saxes: ^6.0.0
@@ -1345,7 +1345,7 @@ __metadata:
   peerDependenciesMeta:
     canvas:
       optional: true
-  checksum: ea33c3f3f084b48685e3838baa1112f0cbffc2949b0249f90ee19152b66dbafc6ae7dd8573ee66933697f881e3bc04c0efc2b56cd26f64fd3e6321a64164e2d1
+  checksum: 6b3cf2d15e5a5712b3db5ff56eba82b97c9a879b52e95063cc8323bdf8837b6ca15cfec85b57ab71c95c6b4a4098bf67f274c6ff4e9ff519aa4811a04f290610
   languageName: node
   linkType: hard
 
@@ -1550,14 +1550,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^6.9.1":
-  version: 6.9.1
-  resolution: "nodemailer@npm:6.9.1"
-  checksum: b1b9670afc170b4454665abae3fc9acd7e781adb9f579d1c2cd991bf75c647ebe345593f8a057e48d7bf9e4c9a9218869f87db8fb7171c614f557000ab654572
-  languageName: node
-  linkType: hard
-
-"nwsapi@npm:^2.2.2":
+"nwsapi@npm:^2.2.4":
   version: 2.2.4
   resolution: "nwsapi@npm:2.2.4"
   checksum: a5eb9467158bdf255d27e9c4555e9ca02e4ba84ddce9b683856ed49de23eb1bb28ae3b8e791b7a93d156ad62b324a56f4d44cad827c2ca288c107ed6bdaff8a8
@@ -1905,10 +1898,9 @@ __metadata:
     "@types/react": ^18.2.0
     "@xata.io/client": ^0.23.5
     dompurify: ^3.0.2
-    jsdom: ^21.1.1
+    jsdom: ^21.1.2
     next: latest
     next-auth: latest
-    nodemailer: ^6.9.1
     react: ^18.2.0
     react-dom: ^18.2.0
     typescript: ^5.0.4

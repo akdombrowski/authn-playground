@@ -39,10 +39,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react", "npm:18.2.0"],\
             ["@xata.io/client", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.23.5"],\
             ["dompurify", "npm:3.0.2"],\
-            ["jsdom", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:21.1.1"],\
+            ["jsdom", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:21.1.2"],\
             ["next", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:13.3.1"],\
             ["next-auth", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:4.22.1"],\
-            ["nodemailer", "npm:6.9.1"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:18.2.0"],\
             ["typescript", "patch:typescript@npm%3A5.0.4#~builtin<compat/typescript>::version=5.0.4&hash=85af82"]\
@@ -1697,17 +1696,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["jsdom", [\
-        ["npm:21.1.1", {\
-          "packageLocation": "./.yarn/cache/jsdom-npm-21.1.1-cb6155f6f0-ea33c3f3f0.zip/node_modules/jsdom/",\
+        ["npm:21.1.2", {\
+          "packageLocation": "./.yarn/cache/jsdom-npm-21.1.2-4916b89bf1-6b3cf2d15e.zip/node_modules/jsdom/",\
           "packageDependencies": [\
-            ["jsdom", "npm:21.1.1"]\
+            ["jsdom", "npm:21.1.2"]\
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:21.1.1", {\
-          "packageLocation": "./.yarn/__virtual__/jsdom-virtual-c21e6301c2/0/cache/jsdom-npm-21.1.1-cb6155f6f0-ea33c3f3f0.zip/node_modules/jsdom/",\
+        ["virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:21.1.2", {\
+          "packageLocation": "./.yarn/__virtual__/jsdom-virtual-a1229d1522/0/cache/jsdom-npm-21.1.2-4916b89bf1-6b3cf2d15e.zip/node_modules/jsdom/",\
           "packageDependencies": [\
-            ["jsdom", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:21.1.1"],\
+            ["jsdom", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:21.1.2"],\
             ["@types/canvas", null],\
             ["abab", "npm:2.0.6"],\
             ["acorn", "npm:8.8.2"],\
@@ -1734,7 +1733,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["whatwg-encoding", "npm:2.0.0"],\
             ["whatwg-mimetype", "npm:3.0.0"],\
             ["whatwg-url", "npm:12.0.1"],\
-            ["ws", "virtual:c21e6301c25b55808fddc7eda294834fdd14c98e988e5926ba66b0b5ad5bccc9a8b4d6bf4d01cd32470fde72aff64a7120d406d0f60623e60764a6c3218359de#npm:8.13.0"],\
+            ["ws", "virtual:a1229d1522caf310df50becf5ed4aaf41bf6e5bc11f9096a8502111481bb477718b7010b81a0127b0336706fd2510485cc35e2380255ddeadec14ffaa357e92c#npm:8.13.0"],\
             ["xml-name-validator", "npm:4.0.0"]\
           ],\
           "packagePeers": [\
@@ -1957,7 +1956,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["cookie", "npm:0.5.0"],\
             ["jose", "npm:4.14.3"],\
             ["next", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:13.3.1"],\
-            ["nodemailer", "npm:6.9.1"],\
+            ["nodemailer", null],\
             ["oauth", "npm:0.9.15"],\
             ["openid-client", "npm:5.4.2"],\
             ["preact", "npm:10.13.2"],\
@@ -1975,15 +1974,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             "nodemailer",\
             "react-dom",\
             "react"\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["nodemailer", [\
-        ["npm:6.9.1", {\
-          "packageLocation": "./.yarn/cache/nodemailer-npm-6.9.1-5159f56f86-b1b9670afc.zip/node_modules/nodemailer/",\
-          "packageDependencies": [\
-            ["nodemailer", "npm:6.9.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -2413,10 +2403,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react", "npm:18.2.0"],\
             ["@xata.io/client", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.23.5"],\
             ["dompurify", "npm:3.0.2"],\
-            ["jsdom", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:21.1.1"],\
+            ["jsdom", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:21.1.2"],\
             ["next", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:13.3.1"],\
             ["next-auth", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:4.22.1"],\
-            ["nodemailer", "npm:6.9.1"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:18.2.0"],\
             ["typescript", "patch:typescript@npm%3A5.0.4#~builtin<compat/typescript>::version=5.0.4&hash=85af82"]\
@@ -2803,10 +2792,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:c21e6301c25b55808fddc7eda294834fdd14c98e988e5926ba66b0b5ad5bccc9a8b4d6bf4d01cd32470fde72aff64a7120d406d0f60623e60764a6c3218359de#npm:8.13.0", {\
-          "packageLocation": "./.yarn/__virtual__/ws-virtual-1064e70c9d/0/cache/ws-npm-8.13.0-26ffa3016a-53e991bbf9.zip/node_modules/ws/",\
+        ["virtual:a1229d1522caf310df50becf5ed4aaf41bf6e5bc11f9096a8502111481bb477718b7010b81a0127b0336706fd2510485cc35e2380255ddeadec14ffaa357e92c#npm:8.13.0", {\
+          "packageLocation": "./.yarn/__virtual__/ws-virtual-e59ab20c2c/0/cache/ws-npm-8.13.0-26ffa3016a-53e991bbf9.zip/node_modules/ws/",\
           "packageDependencies": [\
-            ["ws", "virtual:c21e6301c25b55808fddc7eda294834fdd14c98e988e5926ba66b0b5ad5bccc9a8b4d6bf4d01cd32470fde72aff64a7120d406d0f60623e60764a6c3218359de#npm:8.13.0"],\
+            ["ws", "virtual:a1229d1522caf310df50becf5ed4aaf41bf6e5bc11f9096a8502111481bb477718b7010b81a0127b0336706fd2510485cc35e2380255ddeadec14ffaa357e92c#npm:8.13.0"],\
             ["@types/bufferutil", null],\
             ["@types/utf-8-validate", null],\
             ["bufferutil", null],\
