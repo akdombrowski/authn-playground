@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 
 import Link from "next/link";
 
@@ -9,7 +8,6 @@ import styles from "./header.module.css";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 import NavBtn from "../components/navBtn";
