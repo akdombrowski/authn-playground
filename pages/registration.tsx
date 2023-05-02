@@ -2,7 +2,6 @@ import { useState, SyntheticEvent } from "react";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -11,7 +10,6 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 
@@ -40,9 +38,6 @@ const login = ({ challenge }: { challenge: string }) => {
   const { data: session, status } = useSession();
   const [savedCred, setSavedCred] = useState(false);
   const [webAuthnCred, setWebAuthnCred] = useState("");
-
-  console.log(challenge.split(","));
-
   const isWebAuthnAvail = () => {
     return window.PublicKeyCredential;
   };
@@ -52,8 +47,6 @@ const login = ({ challenge }: { challenge: string }) => {
   ): Promise<PublicKeyCredential | null> => {
     const challengeArray = challenge.split(",");
     const challengeUint8 = new Uint8Array(Buffer.from(challengeArray));
-    console.log("challengeUint8");
-    console.log(challengeUint8.buffer);
     const userID = new Uint8Array(16);
     self.crypto.getRandomValues(userID);
 
@@ -121,14 +114,7 @@ const login = ({ challenge }: { challenge: string }) => {
     event.preventDefault();
 
     try {
-      console.log("event.target.email.value");
-      console.log(event.target.email.value);
-
       pubKeyCred = await createPubKey(event.target.email.value);
-
-      console.log("pubKeyCred");
-      console.log(pubKeyCred);
-      console.log(JSON.stringify(pubKeyCred));
     } catch (e) {
       console.error("WebAuthn failed:", e.message);
     }
@@ -191,8 +177,6 @@ const login = ({ challenge }: { challenge: string }) => {
     // Get the response data from server as JSON.
     // If server returns the name submitted, that means the form works.
     const result = await response.json();
-    console.log("result");
-    console.log(result);
   };
 
   return (
