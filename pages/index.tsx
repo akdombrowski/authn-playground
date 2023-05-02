@@ -12,7 +12,7 @@ export default function IndexPage() {
           <Typography
             variant="h2"
             textAlign="center">
-            NextAuth.js Example
+            Under Construction
           </Typography>
         </Grid>
         <Grid
@@ -21,9 +21,7 @@ export default function IndexPage() {
           pt={5}
           justifyContent="flex-start">
           <Typography variant="body1">
-            This is an example site to demonstrate how to use{" "}
-            <a href="https://next-auth.js.org">NextAuth.js</a> for
-            authentication.
+            This is a playground for implementing authentication with Next.js.
           </Typography>
         </Grid>
       </Grid>
