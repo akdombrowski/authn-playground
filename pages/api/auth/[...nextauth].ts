@@ -50,11 +50,6 @@ export const authOptions: NextAuthOptions = {
         provider: { server, from },
         theme,
       }) {
-        console.log("sendVerificationRequest");
-        console.log("identifier");
-        console.log(email);
-        console.log("sendVerificationRequest");
-
         const provider = { server, from };
         sendVerReq({ email, url, provider, theme });
       },
