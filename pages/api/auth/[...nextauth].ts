@@ -1,10 +1,18 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, {
+  NextAuthOptions,
+  Session,
+  User,
+  Account,
+  Profile,
+} from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import GithubProvider from "next-auth/providers/github";
 import TwitterProvider from "next-auth/providers/twitter";
 import Auth0Provider from "next-auth/providers/auth0";
+
+import { JWT } from "next-auth/jwt";
 
 import { XataAdapter } from "@next-auth/xata-adapter";
 import { XataClient } from "../../../db/xata"; // or wherever you've chosen to create the client
@@ -20,7 +28,7 @@ const client = new XataClient();
 // https://next-auth.js.org/configuration/options
 export const authOptions: NextAuthOptions = {
   // set env var if want to turn on debug and don't commit the env file to git
-  debug: process.env.DEBUG ?? false,
+  debug: (process.env.DEBUG as unknown as boolean) ?? false,
   adapter: XataAdapter(client),
   // https://next-auth.js.org/configuration/providers/oauth
   providers: [
@@ -28,8 +36,8 @@ export const authOptions: NextAuthOptions = {
       id: "email",
       type: "email",
       name: "email",
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
+      server: process.env.EMAIL_SERVER as string,
+      from: process.env.EMAIL_FROM as string,
       maxAge: 30 * 60, // How long email links are valid for (30 min)
       normalizeIdentifier(identifier: string): string {
         const window = new JSDOM("").window;
@@ -50,6 +58,8 @@ export const authOptions: NextAuthOptions = {
         provider: { server, from },
         theme,
       }) {
+        server = server as string;
+        from = from as string;
         const provider = { server, from };
         sendVerReq({ email, url, provider, theme });
       },
@@ -82,14 +92,30 @@ export const authOptions: NextAuthOptions = {
     maxAge: 5 * 60, // 5 min
   },
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({
+      token,
+      user,
+      account,
+    }: {
+      token: JWT;
+      user: User;
+      account: Account | null;
+    }) {
       // Persist the OAuth access_token to the token right after signin
       if (account) {
         token.accessToken = account.access_token;
       }
       return token;
     },
-    async session({ session, token, user }) {
+    async session({
+      session,
+      token,
+      user,
+    }: {
+      session: Session;
+      token: JWT;
+      user: User;
+    }) {
       // Send properties to the client, like an access_token from a provider.
       session.accessToken = token.accessToken;
       return session;

@@ -1,15 +1,26 @@
 import * as SibApiV3Sdk from "@sendinblue/client";
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
+import { Theme } from "next-auth";
 
-const sendVerReq = async (params) => {
-  const { email, url, provider, theme } = params;
+const sendVerReq = async ({
+  email,
+  url,
+  provider,
+  theme,
+}: {
+  email: string;
+  url: string;
+  provider: { server: string; from: string };
+  theme: Theme;
+}) => {
   const { host } = new URL(url);
   const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
   // Configure API key authorization: apiKey
-  const apiKey = apiInstance.authentications["apiKey"];
-
-  apiKey.apiKey = process.env.EMAIL_API_KEY;
+  const apiKey = apiInstance.setApiKey(
+    SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
+    process.env.EMAIL_API_KEY as string
+  );
 
   const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 

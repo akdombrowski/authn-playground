@@ -1,9 +1,5 @@
 import darkScrollbar from "@mui/material/darkScrollbar";
-import {
-  createTheme,
-  responsiveFontSizes,
-  ThemeProvider,
-} from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
 const unresponsiveFontsTheme = createTheme({
   breakpoints: {

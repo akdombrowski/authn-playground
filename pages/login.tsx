@@ -59,10 +59,9 @@ const login = ({
     // Stop the form from submitting and refreshing the page.
     event.preventDefault();
 
-    const email = event.target.email.value;
-    console.log("email");
-    console.log(email);
-
+    const target = event.target as HTMLFormElement;
+    const email = target.email.value;
+    
     // Get data from the form.
     const data = {
       email,

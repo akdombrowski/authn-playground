@@ -36,7 +36,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 const login = ({ challenge }: { challenge: string }) => {
   const { data: session, status } = useSession();
   const [savedCred, setSavedCred] = useState(false);
-  const [webAuthnCred, setWebAuthnCred] = useState("");
   const isWebAuthnAvail = () => {
     return window.PublicKeyCredential;
   };
@@ -45,7 +44,7 @@ const login = ({ challenge }: { challenge: string }) => {
     email: string
   ): Promise<PublicKeyCredential | null> => {
     const challengeArray = challenge.split(",");
-    const challengeUint8 = new Uint8Array(Buffer.from(challengeArray));
+    const challengeUint8 = new Uint8Array(Buffer.from(challenge));
     const userID = new Uint8Array(16);
     self.crypto.getRandomValues(userID);
 
@@ -71,12 +70,12 @@ const login = ({ challenge }: { challenge: string }) => {
         {
           type: "public-key",
           alg: -257, // Value registered by this specification for "RS256"
-        },
+        } as PublicKeyCredentialParameters,
       ],
 
       authenticatorSelection: {
         // UV required.
-        userVerification: "required",
+        userVerification: "required" as UserVerificationRequirement,
       },
 
       timeout: 300000, // 5 minutes
@@ -91,45 +90,51 @@ const login = ({ challenge }: { challenge: string }) => {
     try {
       const pubKeyCred = await createCred(pubKeyOpt);
       return pubKeyCred as PublicKeyCredential;
-    } catch (e) {
+    } catch (e: any) {
       console.error("failed to create webauthn cred");
       console.error(e.message);
       return null;
     }
   };
 
-  const createCred = async (pubKeyOpt) => {
+  const createCred = async (pubKeyOpt: PublicKeyCredentialCreationOptions) => {
     // Note: The following call will cause the authenticator to display UI.
     return navigator.credentials.create({ publicKey: pubKeyOpt });
   };
 
   // Handles the submit event on form submit.
   const handleSubmit = async (event: SyntheticEvent) => {
-    let data;
-    let endpoint;
-    let pubKeyCred: PublicKeyCredential | null;
-
     // Stop the form from submitting and refreshing the page.
     event.preventDefault();
 
+    let data;
+    let endpoint;
+    let pubKeyCred;
+    const target = event.target as HTMLFormElement;
+
     try {
-      pubKeyCred = await createPubKey(event.target.email.value);
+      if (!isWebAuthnAvail) {
+        throw new Error("WebAuthn isn't available on this browser/client.");
+      }
+      pubKeyCred = await createPubKey(target.email.value);
     } catch (e) {
-      console.error("WebAuthn failed:", e.message);
+      const err = e as Error;
+      console.error("WebAuthn failed:", err.message);
     }
 
     if (pubKeyCred) {
       const { authenticatorAttachment, id, rawId, response, type } = pubKeyCred;
+      const res = response as AuthenticatorAttestationResponse;
       const rawIdArr = new Uint8Array(rawId);
       const rawIdStr = rawIdArr.toString();
-      const attestationObjectArr = new Uint8Array(response.attestationObject);
+      const attestationObjectArr = new Uint8Array(res.attestationObject);
       const attestationObjectStr = attestationObjectArr.toString();
       const clientDataJSONArr = new Uint8Array(response.clientDataJSON);
       const clientDataJSONStr = clientDataJSONArr.toString();
 
       // Get data from the form and webauthn.
       data = {
-        email: event.target.email.value,
+        email: target.email.value,
         pubKeyCred: {
           authenticatorAttachment: pubKeyCred.authenticatorAttachment,
           id: pubKeyCred.id,
@@ -144,11 +149,11 @@ const login = ({ challenge }: { challenge: string }) => {
 
       // API endpoint where we send form data.
       endpoint = "/api/webauthn";
-    } else if (event.target.password.value) {
+    } else if (target.password.value) {
       // Get data from the form.
       data = {
-        email: event.target.email.value,
-        pubKeyCred: event.target.password.value,
+        email: target.email.value,
+        pubKeyCred: target.password.value,
       };
       endpoint = "/api/password";
     } else {
@@ -217,7 +222,7 @@ const login = ({ challenge }: { challenge: string }) => {
               component={NextLinkComposed}
               variant="contained"
               size="small"
-              pathname={{ pathname: "/api/auth/signin" }}
+              to={{ pathname: "/api/auth/signin" }}
               onClick={(e: SyntheticEvent) => {
                 e.preventDefault();
                 signIn();
