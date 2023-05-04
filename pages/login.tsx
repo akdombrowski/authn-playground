@@ -61,7 +61,7 @@ const login = ({
 
     const target = event.target as HTMLFormElement;
     const email = target.email.value;
-    
+
     // Get data from the form.
     const data = {
       email,
@@ -164,13 +164,13 @@ const login = ({
                 />
                 <TextField
                   margin="normal"
-                  required
                   fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
+                  name="webauthn"
+                  label="WebAduthn"
+                  type="hidden"
+                  id="webauthn"
+                  autoComplete="webauthn"
+                  sx={{border: 0}}
                 />
                 <FormControlLabel
                   control={
