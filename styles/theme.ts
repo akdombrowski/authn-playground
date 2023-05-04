@@ -7,6 +7,10 @@ const unresponsiveFontsTheme = createTheme({
       xxxs: 0,
       xxs: 200,
       xs: 328,
+      sm: 428,
+      md: 528,
+      lg: 720,
+      xl: 1080,
     },
   },
   components: {
