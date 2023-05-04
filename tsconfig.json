@@ -22,6 +22,7 @@
     "process.d.ts",
     "next-env.d.ts",
     "next-auth.d.ts",
+    "vercel.d.ts",
     "**/*.ts",
     "**/*.tsx"
   ],
