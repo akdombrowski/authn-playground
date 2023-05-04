@@ -32,6 +32,7 @@ export const authOptions: NextAuthOptions = {
   adapter: XataAdapter(client),
   // https://next-auth.js.org/configuration/providers/oauth
   providers: [
+    // allow email magic link login using sendinblue
     EmailProvider({
       id: "email",
       type: "email",
@@ -46,10 +47,20 @@ export const authOptions: NextAuthOptions = {
 
         // Get the first two elements only,
         // separated by `@` from user input.
+        // this is default code from next-auth
+        // they explicitly mention it's not strictly correct to convert to
+        // lowercase, but it tends to be how people expect or know how to use
+        // email addresses
         let [local, domain] = cleanIdentifier.toLowerCase().trim().split("@");
         // The part before "@" can contain a ","
         // but we remove it on the domain part
-        domain = domain.split(",")[0];
+        // aka they might've provided a list of emails
+        if (process.env.DEBUG && domain.includes(",")) {
+          console.error("domain contains a ','. stripping it out.");
+          console.error("domain", domain);
+          domain = domain.split(",")[0];
+        }
+
         return `${local}@${domain}`;
       },
       sendVerificationRequest({
@@ -103,7 +114,7 @@ export const authOptions: NextAuthOptions = {
     }) {
       // Persist the OAuth access_token to the token right after signin
       if (account) {
-        token.accessToken = account.access_token;
+        token.accessToken = account?.access_token;
       }
       return token;
     },
@@ -117,7 +128,7 @@ export const authOptions: NextAuthOptions = {
       user: User;
     }) {
       // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken;
+      session.accessToken = token?.accessToken;
       return session;
     },
   },

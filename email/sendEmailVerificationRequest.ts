@@ -42,10 +42,12 @@ const sendVerReq = async ({
 
   try {
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log(
-      "Email send api called successfully. Returned data: " +
-        JSON.stringify(data)
-    );
+    if (process.env.DEBUG) {
+      console.log(
+        "Email send api called successfully. Returned data: " +
+          JSON.stringify(data)
+      );
+    }
   } catch (error) {
     console.log(error);
     throw new Error("Failed to send transac email.", { cause: error });
