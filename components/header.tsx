@@ -68,48 +68,69 @@ export default function Header() {
                   xs={6}
                   sm={5}
                   md={4}>
-                  <Link
-                    passHref
-                    href="/login"
-                    legacyBehavior>
-                    <Button
-                      component={NextLinkComposed}
-                      variant="contained"
-                      size="small"
-                      to={{ pathname: "/api/auth/signin" }}
-                      onClick={(e: SyntheticEvent) => {
-                        e.preventDefault();
-                        signIn();
-                      }}>
-                      Login
-                    </Button>
-                  </Link>
+                  <Button
+                    component={NextLinkComposed}
+                    variant="contained"
+                    size="small"
+                    to={{ pathname: "/api/auth/signin" }}
+                    onClick={(e: SyntheticEvent) => {
+                      e.preventDefault();
+                      signIn();
+                    }}>
+                    Login
+                  </Button>
                 </Grid>
               </Grid>
             )}
             {session?.user && (
-              <>
+              <Grid
+                item
+                container
+                alignContent="center"
+                height="5vh">
                 {session.user.image && (
                   <span
                     style={{ backgroundImage: `url('${session.user.image}')` }}
                     className={styles.avatar}
                   />
                 )}
-                <span className={styles.signedInText}>
-                  <small>Signed in as</small>
-                  <br />
-                  <strong>{session.user.email ?? session.user.name}</strong>
-                </span>
-                <a
-                  href={`/api/auth/signout`}
-                  className={styles.button}
-                  onClick={(e: { preventDefault: () => void }) => {
-                    e.preventDefault();
-                    signOut();
-                  }}>
-                  Sign out
-                </a>
-              </>
+
+                <Grid
+                  item
+                  xxxs={1}
+                  xxs={2}
+                  xs={6}
+                  sm={7}
+                  md={8}>
+                  <span className={styles.signedInText}>
+                    <small>Signed in as </small>
+                    <br />
+                    <strong>{session.user.email ?? session.user.name}</strong>
+                  </span>
+                </Grid>
+
+                <Grid
+                  item
+                  container
+                  justifyContent="flex-end"
+                  xxxs={11}
+                  xxs={10}
+                  xs={6}
+                  sm={5}
+                  md={4}>
+                  <Button
+                    component={NextLinkComposed}
+                    variant="contained"
+                    size="small"
+                    to={{ pathname: "/api/auth/signout" }}
+                    onClick={(e: SyntheticEvent) => {
+                      e.preventDefault();
+                      signOut();
+                    }}>
+                    Sign out
+                  </Button>
+                </Grid>
+              </Grid>
             )}
           </Grid>
         </Paper>
