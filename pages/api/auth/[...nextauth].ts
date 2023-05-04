@@ -4,6 +4,7 @@ import NextAuth, {
   User,
   Account,
   Profile,
+  RequestInternal,
 } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
@@ -21,6 +22,7 @@ import sendVerReq from "../../../email/sendEmailVerificationRequest";
 
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
+import Credentials from "next-auth/providers/credentials";
 
 const client = new XataClient();
 
@@ -75,6 +77,32 @@ export const authOptions: NextAuthOptions = {
         sendVerReq({ email, url, provider, theme });
       },
     }),
+    Credentials({
+      id: "webauthn",
+      name: "WebAuthn",
+      credentials: {
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "emailaddress@example.com",
+        },
+        pubKeyCred: {
+          label: "WebAuthn Public Key Credential",
+          type: "hidden",
+        },
+      },
+      async authorize(
+        credentials: Record<string, string> | undefined,
+        req: Pick<RequestInternal, "body" | "query" | "headers" | "method">
+      ): Promise<any> {
+        if (process.env.DEBUG) {
+          console.log("credentials");
+          console.log(credentials);
+          console.log("req");
+          console.log(req);
+        }
+      },
+    }),
     Auth0Provider({
       clientId: process.env.AUTH0_ID,
       clientSecret: process.env.AUTH0_SECRET,
@@ -99,7 +127,10 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: "database",
+    strategy: "jwt",
+    maxAge: 5 * 60, // 5 min
+  },
+  jwt: {
     maxAge: 5 * 60, // 5 min
   },
   callbacks: {
