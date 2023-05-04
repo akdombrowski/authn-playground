@@ -96,6 +96,7 @@ export const authOptions: NextAuthOptions = {
         req: Pick<RequestInternal, "body" | "query" | "headers" | "method">
       ): Promise<any> {
         if (process.env.DEBUG) {
+          console.log("in Credentials Provider authorize func");
           console.log("credentials");
           console.log(credentials);
           console.log("req");

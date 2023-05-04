@@ -4,6 +4,8 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
+import { Analytics } from "@vercel/analytics/react";
+
 import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -21,6 +23,7 @@ export default function App({
       <ThemeProvider theme={theme}>
         <CssBaseline enableColorScheme />
         <Component {...pageProps} />
+        <Analytics />
       </ThemeProvider>
     </SessionProvider>
   );

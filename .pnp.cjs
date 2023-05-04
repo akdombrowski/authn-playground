@@ -42,6 +42,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react-dom", "npm:18.2.1"],\
             ["@typescript-eslint/eslint-plugin", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:5.59.2"],\
             ["@typescript-eslint/parser", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:5.59.2"],\
+            ["@vercel/analytics", "npm:1.0.1"],\
             ["@xata.io/client", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.23.5"],\
             ["dompurify", "npm:3.0.2"],\
             ["eslint", "npm:8.39.0"],\
@@ -1266,6 +1267,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/visitor-keys", "npm:5.59.2"],\
             ["@typescript-eslint/types", "npm:5.59.2"],\
             ["eslint-visitor-keys", "npm:3.4.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@vercel/analytics", [\
+        ["npm:1.0.1", {\
+          "packageLocation": "./.yarn/cache/@vercel-analytics-npm-1.0.1-545fdc4bb4-6876e1d086.zip/node_modules/@vercel/analytics/",\
+          "packageDependencies": [\
+            ["@vercel/analytics", "npm:1.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -3624,6 +3634,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react-dom", "npm:18.2.1"],\
             ["@typescript-eslint/eslint-plugin", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:5.59.2"],\
             ["@typescript-eslint/parser", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:5.59.2"],\
+            ["@vercel/analytics", "npm:1.0.1"],\
             ["@xata.io/client", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.23.5"],\
             ["dompurify", "npm:3.0.2"],\
             ["eslint", "npm:8.39.0"],\
