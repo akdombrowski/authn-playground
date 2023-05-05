@@ -1,0 +1,16 @@
+{
+  "id": "mig_chap9g4n8bck992ahqbg",
+  "parentID": "mig_chap9b4n8bck992ahqag",
+  "checksum": "1:2afd4ff510bbf8f514805628f1f3b24553b5498f9dad7e1e51a813dfab4c33f3",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "email",
+          "type": "email"
+        },
+        "table": "nextauth_credentials"
+      }
+    }
+  ]
+}

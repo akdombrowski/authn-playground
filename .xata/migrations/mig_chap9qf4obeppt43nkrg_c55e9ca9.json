@@ -1,0 +1,13 @@
+{
+  "id": "mig_chap9qf4obeppt43nkrg",
+  "parentID": "mig_chap9nv4obeppt43nkqg",
+  "checksum": "1:c55e9ca945923da4ea4e6698ddbfa780cb00b56c43e509c54a6cca8ef4ec7f44",
+  "operations": [
+    {
+      "removeColumn": {
+        "column": "email",
+        "table": "nextauth_credentials"
+      }
+    }
+  ]
+}

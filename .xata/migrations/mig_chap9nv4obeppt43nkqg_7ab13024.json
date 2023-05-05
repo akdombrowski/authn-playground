@@ -1,0 +1,19 @@
+{
+  "id": "mig_chap9nv4obeppt43nkqg",
+  "parentID": "mig_chap9g4n8bck992ahqbg",
+  "checksum": "1:7ab13024f757406c0cd65c33ea03f73748984a53bc00c651016cc4f5ea256ee8",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "user",
+          "type": "link",
+          "link": {
+            "table": "nextauth_users"
+          }
+        },
+        "table": "nextauth_credentials"
+      }
+    }
+  ]
+}

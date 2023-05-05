@@ -1,0 +1,12 @@
+{
+  "id": "mig_chap3jnvbcqon5navrig",
+  "parentID": "mig_ch889p4f1735sb6cgkc0",
+  "checksum": "1:f8fc6569d8dbb9b64ac5494f573072084107369320fe087801df69a90dfa66aa",
+  "operations": [
+    {
+      "addTable": {
+        "table": "nextauth_credentials"
+      }
+    }
+  ]
+}

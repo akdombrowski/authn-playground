@@ -168,7 +168,7 @@
                 },
                 {
                     "name": "credential",
-                    "type": "object"
+                    "type": "string"
                 },
                 {
                     "name": "user",

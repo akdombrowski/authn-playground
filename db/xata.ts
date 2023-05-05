@@ -62,7 +62,13 @@ const tables = [
       { name: "user", type: "link", link: { table: "nextauth_users" } },
     ],
   },
-  { name: "nextauth_credentials", columns: [] },
+  {
+    name: "nextauth_credentials",
+    columns: [
+      { name: "credential", type: "string" },
+      { name: "user", type: "link", link: { table: "nextauth_users" } },
+    ],
+  },
 ] as const;
 
 export type SchemaTables = typeof tables;

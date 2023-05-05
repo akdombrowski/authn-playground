@@ -1,0 +1,22 @@
+{
+  "id": "mig_chap8v74obeppt43nkpg",
+  "parentID": "mig_chap65sn8bck992ahq80",
+  "checksum": "1:84b479669fb71d40bd45fb98a03f96ab27939f576b4d8f9c1a93f249e0da9534",
+  "operations": [
+    {
+      "addTable": {
+        "table": "nextauth_credentials"
+      }
+    },
+    {
+      "addColumn": {
+        "column": {
+          "name": "userID",
+          "type": "string",
+          "unique": true
+        },
+        "table": "nextauth_credentials"
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "mig_chap9b4n8bck992ahqag",
+  "parentID": "mig_chap8v74obeppt43nkpg",
+  "checksum": "1:858ba5528d556ec4e47843e4b4804db47bf8a940f4def8e6eabb9ef4956384bc",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "credential",
+          "type": "string"
+        },
+        "table": "nextauth_credentials"
+      }
+    }
+  ]
+}
