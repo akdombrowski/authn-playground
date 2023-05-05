@@ -39,12 +39,23 @@ const login = ({ challenge }: { challenge: string }) => {
   const isWebAuthnAvail = () => {
     return window.PublicKeyCredential;
   };
+  const challengeArray = challenge.split(",");
+  const challengeUint8 = new Uint8Array(Buffer.from(challenge));
+  const rp = "authn-playground";
+
+  const isResponseInstanceOfAAR = (response) => {
+    if (!(response instanceof AuthenticatorAttestationResponse)) {
+      console.log(
+        "response is not an isntance of AuthenticatorAttestationResponse"
+      );
+      console.log("response is of type: " + typeof response);
+      return false;
+    }
+  };
 
   const createPubKey = async (
     email: string
   ): Promise<PublicKeyCredential | null> => {
-    const challengeArray = challenge.split(",");
-    const challengeUint8 = new Uint8Array(Buffer.from(challenge));
     const userID = new Uint8Array(16);
     self.crypto.getRandomValues(userID);
 
@@ -54,7 +65,7 @@ const login = ({ challenge }: { challenge: string }) => {
 
       // Relying Party:
       rp: {
-        name: "webauthn-playground",
+        name: rp,
       },
 
       // User:
@@ -123,32 +134,92 @@ const login = ({ challenge }: { challenge: string }) => {
     }
 
     if (pubKeyCred) {
-      const { authenticatorAttachment, id, rawId, response, type } = pubKeyCred;
-      const res = response as AuthenticatorAttestationResponse;
-      const rawIdArr = new Uint8Array(rawId);
-      const rawIdStr = rawIdArr.toString();
-      const attestationObjectArr = new Uint8Array(res.attestationObject);
-      const attestationObjectStr = attestationObjectArr.toString();
-      const clientDataJSONArr = new Uint8Array(response.clientDataJSON);
-      const clientDataJSONStr = clientDataJSONArr.toString();
+      try {
+        const decoder = new TextDecoder("utf-8", {
+          fatal: true,
+          ignoreBOM: true,
+        });
+        const { authenticatorAttachment, id, rawId, response, type } =
+          pubKeyCred;
+        const rawIdArr = new Uint8Array(rawId);
+        const rawIdStr = rawIdArr.toString();
 
-      // Get data from the form and webauthn.
-      data = {
-        email: target.email.value,
-        pubKeyCred: {
-          authenticatorAttachment: pubKeyCred.authenticatorAttachment,
-          id: pubKeyCred.id,
-          rawId: rawIdStr,
-          response: {
-            attestationObj: attestationObjectStr,
-            clientDataJSON: clientDataJSONStr,
+        if (!(response instanceof AuthenticatorAttestationResponse)) {
+          throw new Error(
+            "The PublicKeyCredential's response is not an instance of AuthenticatorAttestationResponse"
+          );
+        }
+
+        const res = response as AuthenticatorAttestationResponse;
+        const attestationObjectArr = new Uint8Array(res.attestationObject);
+        const attestationObjectStr = attestationObjectArr.toString();
+        const clientDataJSONArr = new Uint8Array(res.clientDataJSON);
+        const clientDataJSONStr = clientDataJSONArr.toString();
+        const clientExtensionResults = pubKeyCred.getClientExtensionResults();
+        const jsonText = decoder.decode(clientDataJSONArr);
+
+        const C = JSON.parse(jsonText);
+
+        console.log("");
+        console.log("C.type");
+        console.log(C.type);
+
+        if (C.type !== "webauthn.create") {
+          throw new Error(
+            "PublicKeyCredential's clientData doesn't represent a create operation"
+          );
+        }
+
+        // replace chars that are in base64url encoding to get base64
+        // encoding, then base64 decode that string
+        const credChallStr = window.btoa(
+          C.challenge.replace("-", "+").replace("_", "/")
+        );
+        if (challengeUint8.toString() !== credChallStr) {
+          throw new Error(
+            "PublicKeyCredential's returned challenge does not match what was sent for credential creation"
+          );
+        }
+
+        if (C.origin !== rp) {
+          throw new Error(
+            "PublicKeyCredential's relying party doesn't match. Expected " +
+              rp +
+              " but received " +
+              C.origin
+          );
+        }
+
+        // TokenBinding
+        console.log("");
+        console.log("C.tokenBinding.status");
+        console.log(C.tokenBinding.status);
+
+        const hash = crypto.subtle.digest("SHA-256", res.clientDataJSON);
+
+        // CBOR decoding
+        res.attestationObject;
+
+        // Prep data object for sending to api
+        data = {
+          email: target.email.value,
+          pubKeyCred: {
+            authenticatorAttachment: authenticatorAttachment,
+            id: id,
+            rawId: rawIdStr,
+            response: {
+              attestationObj: attestationObjectStr,
+              clientDataJSON: clientDataJSONStr,
+            },
+            type: type,
           },
-          type: type,
-        },
-      };
+        };
 
-      // API endpoint where we send form data.
-      endpoint = "/api/webauthn";
+        // API endpoint where we send form data.
+        endpoint = "/api/webauthn";
+      } catch (e: any) {
+        console.error("webauthn failed:", e.message);
+      }
     } else if (target.password.value) {
       // Get data from the form.
       data = {
@@ -162,7 +233,7 @@ const login = ({ challenge }: { challenge: string }) => {
     }
 
     // Send the data to the server in JSON format.
-    const jsonData = JSON.stringify(data);
+    let jsonData = JSON.stringify(data);
     // Form the request for sending data to the server.
     const options = {
       // The method is POST because we are sending data.
@@ -178,9 +249,14 @@ const login = ({ challenge }: { challenge: string }) => {
     // Send the form data to our forms API on Vercel and get a response.
     const response = await fetch(endpoint, options);
 
+    console.log("response");
+    console.log(response);
+
     // Get the response data from server as JSON.
     // If server returns the name submitted, that means the form works.
     const result = await response.json();
+
+    signIn("webauthn", { result: JSON.stringify(result) });
   };
 
   return (

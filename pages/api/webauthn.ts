@@ -13,6 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const email = body.email;
   const pubKeyCred = body.pubKeyCred;
+  const { authenticatorAttachment, id, rawId, response, type } = pubKeyCred;
 
   // Guard clause checks for first and last name,
   // and returns early if they are not found
@@ -34,7 +35,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ data: "Cred not found" });
   }
 
-  if (!pubKeyCred.authenticatorAttachment) {
+  if (!authenticatorAttachment) {
     // Optional logging to see the responses
     // in the command line where next.js app is running.
     console.log("authenticatorAttachment not found");
@@ -45,12 +46,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       .json({ data: "Cred authenticatorAttachment not found" });
   }
 
-  console.log("pubKeyCred");
-  console.log(pubKeyCred);
-  console.log("pubKeyCred.id");
-  console.log(pubKeyCred.id);
-
-  if (!pubKeyCred.id) {
+  if (!id) {
     // Optional logging to see the responses
     // in the command line where next.js app is running.
     console.log("id not found");
@@ -59,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ data: "Cred id not found" });
   }
 
-  if (!pubKeyCred.rawId) {
+  if (!rawId) {
     // Optional logging to see the responses
     // in the command line where next.js app is running.
     console.log("rawId not found");
@@ -68,7 +64,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ data: "Cred rawId not found" });
   }
 
-  if (!pubKeyCred.response) {
+  if (!response) {
     // Optional logging to see the responses
     // in the command line where next.js app is running.
     console.log("response not found");
@@ -77,7 +73,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ data: "Cred response not found" });
   }
 
-  if (!pubKeyCred.type) {
+  if (!type) {
     // Optional logging to see the responses
     // in the command line where next.js app is running.
     console.log("type not found");
@@ -86,13 +82,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ data: "Cred type not found" });
   }
 
-  const pubKeyCredValues = {
-    authenticatorAttachment: pubKeyCred.authenticatorAttachment,
-    id: pubKeyCred.id,
-    rawId: pubKeyCred.rawId,
-    response: pubKeyCred.response,
-    type: pubKeyCred.type,
-  };
+  
+
 
   // Found the name.
   // Sends a HTTP success code
