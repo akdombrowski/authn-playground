@@ -67,6 +67,7 @@ const tables = [
     columns: [
       { name: "credential", type: "string" },
       { name: "user", type: "link", link: { table: "nextauth_users" } },
+      { name: "challenge", type: "string" },
     ],
   },
 ] as const;
