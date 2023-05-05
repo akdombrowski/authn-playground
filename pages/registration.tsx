@@ -23,6 +23,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const rpName = "authn-playground";
   const rpID = "authnplayground";
+  const userID = new Uint8Array(16);
+  self.crypto.getRandomValues(userID);
   const challUint8 = new Uint8Array(32);
   randomFillSync(challUint8);
 
@@ -30,6 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
+      userID,
       challenge,
       rpName,
       rpID,
@@ -38,10 +41,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 const login = ({
+  userID,
   challenge,
   rpName,
   rpID,
 }: {
+  userID: Uint8Array;
   challenge: string;
   rpName: string;
   rpID: string;
@@ -54,20 +59,16 @@ const login = ({
   const challengeArray = challenge.split(",");
   const challengeUint8 = new Uint8Array(Buffer.from(challenge));
 
-
   const createPubKey = async (
     email: string
   ): Promise<PublicKeyCredential | null> => {
-    const userID = new Uint8Array(16);
-    self.crypto.getRandomValues(userID);
-
     const pubKeyOpt = {
       // The challenge is produced by the server; see the Security Considerations
       challenge: challengeUint8,
 
       // Relying Party:
       rp: {
-        name: rp,
+        name: rpName,
       },
 
       // User:
