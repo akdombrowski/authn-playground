@@ -18,17 +18,26 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import NextLinkComposed from "../components/NextLinkComposed";
 
+import { getXataClient } from "../db/xata";
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const xata = getXataClient();
   const { randomFillSync } = await import("node:crypto");
 
   const rpName = "authn-playground";
   const rpID = "authnplayground";
   const userID = new Uint8Array(16);
   self.crypto.getRandomValues(userID);
+  const userIDStr = userID.toString();
   const challUint8 = new Uint8Array(32);
   randomFillSync(challUint8);
 
   const challenge = challUint8.toString();
+
+  const record = await xata.db.nextauth_credentials.create({
+    user: { id: userIDStr },
+    challenge: challenge,
+  });
 
   return {
     props: {
