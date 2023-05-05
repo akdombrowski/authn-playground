@@ -147,6 +147,37 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "nextauth_credentials",
+            "columns": [
+                {
+                    "name": "user",
+                    "type": "link",
+                    "linK": {
+                        "table": "nextauth_users"
+                    }
+                },
+                {
+                    "name": "userID",
+                    "type": "string"
+                },
+                {
+                    "name": "email",
+                    "type": "email"
+                },
+                {
+                    "name": "credential",
+                    "type": "object"
+                },
+                {
+                    "name": "user",
+                    "type": "link",
+                    "link": {
+                        "table": "nextauth_users"
+                    }
+                }
+            ]
         }
     ]
 }

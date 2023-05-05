@@ -21,6 +21,8 @@ import NextLinkComposed from "../components/NextLinkComposed";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { randomFillSync } = await import("node:crypto");
 
+  const rpName = "authn-playground";
+  const rpID = "authnplayground";
   const challUint8 = new Uint8Array(32);
   randomFillSync(challUint8);
 
@@ -29,11 +31,21 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       challenge,
+      rpName,
+      rpID,
     },
   };
 };
 
-const login = ({ challenge }: { challenge: string }) => {
+const login = ({
+  challenge,
+  rpName,
+  rpID,
+}: {
+  challenge: string;
+  rpName: string;
+  rpID: string;
+}) => {
   const { data: session, status } = useSession();
   const [savedCred, setSavedCred] = useState(false);
   const isWebAuthnAvail = () => {
@@ -41,17 +53,7 @@ const login = ({ challenge }: { challenge: string }) => {
   };
   const challengeArray = challenge.split(",");
   const challengeUint8 = new Uint8Array(Buffer.from(challenge));
-  const rp = "authn-playground";
 
-  const isResponseInstanceOfAAR = (response) => {
-    if (!(response instanceof AuthenticatorAttestationResponse)) {
-      console.log(
-        "response is not an isntance of AuthenticatorAttestationResponse"
-      );
-      console.log("response is of type: " + typeof response);
-      return false;
-    }
-  };
 
   const createPubKey = async (
     email: string
@@ -134,92 +136,32 @@ const login = ({ challenge }: { challenge: string }) => {
     }
 
     if (pubKeyCred) {
-      try {
-        const decoder = new TextDecoder("utf-8", {
-          fatal: true,
-          ignoreBOM: true,
-        });
-        const { authenticatorAttachment, id, rawId, response, type } =
-          pubKeyCred;
-        const rawIdArr = new Uint8Array(rawId);
-        const rawIdStr = rawIdArr.toString();
+      const { authenticatorAttachment, id, rawId, response, type } = pubKeyCred;
+      const rawIdArr = new Uint8Array(rawId);
+      const rawIdStr = rawIdArr.toString();
+      const res = response as AuthenticatorAttestationResponse;
+      const attestationObjectArr = new Uint8Array(res.attestationObject);
+      const attestationObjectStr = attestationObjectArr.toString();
+      const clientDataJSONArr = new Uint8Array(res.clientDataJSON);
+      const clientDataJSONStr = clientDataJSONArr.toString();
 
-        if (!(response instanceof AuthenticatorAttestationResponse)) {
-          throw new Error(
-            "The PublicKeyCredential's response is not an instance of AuthenticatorAttestationResponse"
-          );
-        }
-
-        const res = response as AuthenticatorAttestationResponse;
-        const attestationObjectArr = new Uint8Array(res.attestationObject);
-        const attestationObjectStr = attestationObjectArr.toString();
-        const clientDataJSONArr = new Uint8Array(res.clientDataJSON);
-        const clientDataJSONStr = clientDataJSONArr.toString();
-        const clientExtensionResults = pubKeyCred.getClientExtensionResults();
-        const jsonText = decoder.decode(clientDataJSONArr);
-
-        const C = JSON.parse(jsonText);
-
-        console.log("");
-        console.log("C.type");
-        console.log(C.type);
-
-        if (C.type !== "webauthn.create") {
-          throw new Error(
-            "PublicKeyCredential's clientData doesn't represent a create operation"
-          );
-        }
-
-        // replace chars that are in base64url encoding to get base64
-        // encoding, then base64 decode that string
-        const credChallStr = window.btoa(
-          C.challenge.replace("-", "+").replace("_", "/")
-        );
-        if (challengeUint8.toString() !== credChallStr) {
-          throw new Error(
-            "PublicKeyCredential's returned challenge does not match what was sent for credential creation"
-          );
-        }
-
-        if (C.origin !== rp) {
-          throw new Error(
-            "PublicKeyCredential's relying party doesn't match. Expected " +
-              rp +
-              " but received " +
-              C.origin
-          );
-        }
-
-        // TokenBinding
-        console.log("");
-        console.log("C.tokenBinding.status");
-        console.log(C.tokenBinding.status);
-
-        const hash = crypto.subtle.digest("SHA-256", res.clientDataJSON);
-
-        // CBOR decoding
-        res.attestationObject;
-
-        // Prep data object for sending to api
-        data = {
-          email: target.email.value,
-          pubKeyCred: {
-            authenticatorAttachment: authenticatorAttachment,
-            id: id,
-            rawId: rawIdStr,
-            response: {
-              attestationObj: attestationObjectStr,
-              clientDataJSON: clientDataJSONStr,
-            },
-            type: type,
+      // Prep data object for sending to api
+      data = {
+        email: target.email.value,
+        pubKeyCred: {
+          authenticatorAttachment: authenticatorAttachment,
+          id: id,
+          rawId: rawIdStr,
+          response: {
+            attestationObj: attestationObjectStr,
+            clientDataJSON: clientDataJSONStr,
           },
-        };
+          type: type,
+        },
+      };
 
-        // API endpoint where we send form data.
-        endpoint = "/api/webauthn";
-      } catch (e: any) {
-        console.error("webauthn failed:", e.message);
-      }
+      // API endpoint where we send form data.
+      endpoint = "/api/webauthn";
     } else if (target.password.value) {
       // Get data from the form.
       data = {

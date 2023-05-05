@@ -62,6 +62,7 @@ const tables = [
       { name: "user", type: "link", link: { table: "nextauth_users" } },
     ],
   },
+  { name: "nextauth_credentials", columns: [] },
 ] as const;
 
 export type SchemaTables = typeof tables;
@@ -87,6 +88,9 @@ export type NextauthUsersSessionsRecord = NextauthUsersSessions & XataRecord;
 export type NextauthSessions = InferredTypes["nextauth_sessions"];
 export type NextauthSessionsRecord = NextauthSessions & XataRecord;
 
+export type NextauthCredentials = InferredTypes["nextauth_credentials"];
+export type NextauthCredentialsRecord = NextauthCredentials & XataRecord;
+
 export type DatabaseSchema = {
   nextauth_users: NextauthUsersRecord;
   nextauth_accounts: NextauthAccountsRecord;
@@ -94,6 +98,7 @@ export type DatabaseSchema = {
   nextauth_users_accounts: NextauthUsersAccountsRecord;
   nextauth_users_sessions: NextauthUsersSessionsRecord;
   nextauth_sessions: NextauthSessionsRecord;
+  nextauth_credentials: NextauthCredentialsRecord;
 };
 
 const DatabaseClient = buildClient();

@@ -2,6 +2,19 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
 
+const rpName = "authn-playground";
+const rpID = "authnplayground";
+
+const isResponseInstanceOfAAR = (response: any) => {
+  if (!(response instanceof AuthenticatorAttestationResponse)) {
+    console.log(
+      "response is not an isntance of AuthenticatorAttestationResponse"
+    );
+    console.log("response is of type: " + typeof response);
+    return false;
+  }
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
   // Get data submitted in request's body.
@@ -82,10 +95,74 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ data: "Cred type not found" });
   }
 
-  
+  if (pubKeyCred) {
+    try {
+      const decoder = new TextDecoder("utf-8", {
+        fatal: true,
+        ignoreBOM: true,
+      });
+      const { authenticatorAttachment, id, rawId, response, type } = pubKeyCred;
+      const rawIdArr = new Uint8Array(rawId);
+      const rawIdStr = rawIdArr.toString();
 
+      if (!(response instanceof AuthenticatorAttestationResponse)) {
+        throw new Error(
+          "The PublicKeyCredential's response is not an instance of AuthenticatorAttestationResponse"
+        );
+      }
 
-  // Found the name.
+      const res = response as AuthenticatorAttestationResponse;
+      const attestationObjectArr = new Uint8Array(res.attestationObject);
+      const attestationObjectStr = attestationObjectArr.toString();
+      const clientDataJSONArr = new Uint8Array(res.clientDataJSON);
+      const clientDataJSONStr = clientDataJSONArr.toString();
+      const clientExtensionResults = pubKeyCred.getClientExtensionResults();
+      const jsonText = decoder.decode(clientDataJSONArr);
+
+      const C = JSON.parse(jsonText);
+
+      console.log("");
+      console.log("C.type");
+      console.log(C.type);
+
+      if (C.type !== "webauthn.create") {
+        throw new Error(
+          "PublicKeyCredential's clientData doesn't represent a create operation"
+        );
+      }
+
+      // replace chars that are in base64url encoding to get base64
+      // encoding, then base64 decode that string
+      const credChallStr = window.btoa(
+        C.challenge.replace("-", "+").replace("_", "/")
+      );
+      if (challengeUint8.toString() !== credChallStr) {
+        throw new Error(
+          "PublicKeyCredential's returned challenge does not match what was sent for credential creation"
+        );
+      }
+
+      if (C.origin !== rp) {
+        throw new Error(
+          "PublicKeyCredential's relying party doesn't match. Expected " +
+            rp +
+            " but received " +
+            C.origin
+        );
+      }
+
+      // TokenBinding
+      console.log("");
+      console.log("C.tokenBinding.status");
+      console.log(C.tokenBinding.status);
+
+      const hash = crypto.subtle.digest("SHA-256", res.clientDataJSON);
+
+      // CBOR decoding
+      res.attestationObject;
+    } catch (e) {}
+  }
+
   // Sends a HTTP success code
   res.status(200).json({
     data: {
