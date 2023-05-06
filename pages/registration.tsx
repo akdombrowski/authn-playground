@@ -65,7 +65,6 @@ const login = ({
   const isWebAuthnAvail = () => {
     return window.PublicKeyCredential;
   };
-  const challengeArray = challenge.split(",");
   const challengeUint8 = new Uint8Array(Buffer.from(challenge));
 
   const createPubKey = async (
