@@ -279,31 +279,6 @@ const login = ({
             container
             xs={12}
             justifyContent="center">
-            <Button
-              component={NextLinkComposed}
-              variant="contained"
-              size="small"
-              to={{ pathname: "/api/auth/signin" }}
-              onClick={(e: SyntheticEvent) => {
-                e.preventDefault();
-                signIn();
-              }}>
-              Provider Login
-            </Button>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            mt={5}>
-            <Divider variant="middle">
-              <Chip label="OR" />
-            </Divider>
-          </Grid>
-          <Grid
-            item
-            container
-            xs={12}
-            justifyContent="center">
             <Box
               sx={{
                 marginTop: 3,
@@ -317,7 +292,7 @@ const login = ({
               <Typography
                 component="h1"
                 variant="h5">
-                Sign in
+                Register A New Account
               </Typography>
               <Box
                 component="form"
@@ -343,7 +318,7 @@ const login = ({
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}>
-                  Sign In
+                  Sign Up
                 </Button>
                 <Grid container>
                   <Grid item>
