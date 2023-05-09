@@ -12,7 +12,6 @@ import {
   useState,
 } from "react";
 
-// const EmailInput = forwardRef((props, ref: ForwardedRef<HTMLInputElement>) => {
 const EmailInput = () => {
   const { focused } = useFormControl() || {};
 
@@ -29,7 +28,6 @@ const EmailInput = () => {
         const res = await response.json();
 
         console.log(res);
-        // challRef.current = new Uint8Array(Buffer.from(res.data.challenge));
       };
 
       getChall();
