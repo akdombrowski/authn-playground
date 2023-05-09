@@ -1,98 +1,166 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
+import { apiErrorResponse, convertStringToUint8Array } from "../../util";
 
-const rpName = "authn-playground";
-const rpID = "authnplayground";
+const rpName = process.env.RP_NAME;
+const rpID = process.env.RP_ID;
+const DEBUG = process.env.DEBUG
+  ? (process.env.DEBUG as unknown as boolean)
+  : false;
 
-const isResponseInstanceOfAAR = (response: any) => {
+const isResponseInstanceOfAAR = (response: any, isLoggingEnabled: boolean) => {
   if (!(response instanceof AuthenticatorAttestationResponse)) {
-    console.log(
-      "response is not an isntance of AuthenticatorAttestationResponse"
-    );
-    console.log("response is of type: " + typeof response);
+    if (isLoggingEnabled) {
+      console.log(
+        "response is not an isntance of AuthenticatorAttestationResponse"
+      );
+      console.log("response is of type: " + typeof response);
+    }
     return false;
   }
+
+  return true;
 };
 
+/**
+ * Main API handler for /webauthn
+ *
+ * @param {NextApiRequest} req
+ * @param {NextApiResponse} res
+ * @return {*}
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
   // Get data submitted in request's body.
   const body = req.body;
 
   if (!body) {
-    return res.status(400).json({ data: "No data found" });
+    return apiErrorResponse({
+      res,
+      body,
+      isLoggingEnabled: false,
+      logs: [],
+      code: 400,
+      resErrMsg: "No data found",
+    });
   }
 
   const email = body.email;
   const pubKeyCred = body.pubKeyCred;
-  const { authenticatorAttachment, id, rawId, response, type } = pubKeyCred;
 
-  // Guard clause checks for first and last name,
-  // and returns early if they are not found
   if (!email) {
-    // Optional logging to see the responses
-    // in the command line where next.js app is running.
-    console.log("email not found");
-    console.log("body: ", body);
-    // Sends a HTTP bad request error code
-    return res.status(400).json({ data: "Email not found" });
+    const log1 = "email not found";
+    const log2 = "body: " + body;
+    const logs = [log1, log2];
+    const code = 400;
+    const resErrMsg = "Email not found";
+    return apiErrorResponse({
+      res,
+      body,
+      isLoggingEnabled: DEBUG,
+      logs,
+      code,
+      resErrMsg,
+    });
   }
 
   if (!pubKeyCred) {
-    // Optional logging to see the responses
-    // in the command line where next.js app is running.
-    console.log("pubKeyCred not found");
-    console.log("body: ", body);
-    // Sends a HTTP bad request error code
-    return res.status(400).json({ data: "Cred not found" });
+    const log1 = "pubKeyCred missing";
+    const log2 = "body: " + body;
+    const logs = [log1, log2];
+    const code = 400;
+    const resErrMsg = "Cred missing";
+    return apiErrorResponse({
+      res,
+      body,
+      isLoggingEnabled: DEBUG,
+      logs,
+      code,
+      resErrMsg,
+    });
   }
 
+  const { authenticatorAttachment, id, rawId, response, type } = pubKeyCred;
+
   if (!authenticatorAttachment) {
-    // Optional logging to see the responses
-    // in the command line where next.js app is running.
-    console.log("authenticatorAttachment not found");
-    console.log("body: ", body);
-    // Sends a HTTP bad request error code
-    return res
-      .status(400)
-      .json({ data: "Cred authenticatorAttachment not found" });
+    const log1 = "authenticatorAttachment missing";
+    const log2 = "body: " + body;
+    const logs = [log1, log2];
+    const code = 400;
+    const resErrMsg = "Cred's authenticatorAttachment missing";
+    return apiErrorResponse({
+      res,
+      body,
+      isLoggingEnabled: DEBUG,
+      logs,
+      code,
+      resErrMsg,
+    });
   }
 
   if (!id) {
-    // Optional logging to see the responses
-    // in the command line where next.js app is running.
-    console.log("id not found");
-    console.log("body: ", body);
-    // Sends a HTTP bad request error code
-    return res.status(400).json({ data: "Cred id not found" });
+    const log1 = "id missing";
+    const log2 = "body: " + body;
+    const logs = [log1, log2];
+    const code = 400;
+    const resErrMsg = "Cred's id missing";
+    return apiErrorResponse({
+      res,
+      body,
+      isLoggingEnabled: DEBUG,
+      logs,
+      code,
+      resErrMsg,
+    });
   }
 
   if (!rawId) {
-    // Optional logging to see the responses
-    // in the command line where next.js app is running.
-    console.log("rawId not found");
-    console.log("body: ", body);
-    // Sends a HTTP bad request error code
-    return res.status(400).json({ data: "Cred rawId not found" });
+    const log1 = "rawId missing";
+    const log2 = "body: " + body;
+    const logs = [log1, log2];
+    const code = 400;
+    const resErrMsg = "Cred's rawId missing";
+    return apiErrorResponse({
+      res,
+      body,
+      isLoggingEnabled: DEBUG,
+      logs,
+      code,
+      resErrMsg,
+    });
   }
 
   if (!response) {
-    // Optional logging to see the responses
-    // in the command line where next.js app is running.
-    console.log("response not found");
-    console.log("body: ", body);
-    // Sends a HTTP bad request error code
-    return res.status(400).json({ data: "Cred response not found" });
+    const log1 = "cred response missing";
+    const log2 = "body: " + body;
+    const logs = [log1, log2];
+    const code = 400;
+    const resErrMsg = "Cred's response missing";
+    return apiErrorResponse({
+      res,
+      body,
+      isLoggingEnabled: DEBUG,
+      logs,
+      code,
+      resErrMsg,
+    });
   }
 
   if (!type) {
-    // Optional logging to see the responses
-    // in the command line where next.js app is running.
-    console.log("type not found");
-    console.log("body: ", body);
-    // Sends a HTTP bad request error code
-    return res.status(400).json({ data: "Cred type not found" });
+    const log1 = "type missing";
+    const log2 = "body: " + body;
+    const logs = [log1, log2];
+    const code = 400;
+    const resErrMsg = "Cred's type missing";
+    return apiErrorResponse({
+      res,
+      body,
+      isLoggingEnabled: DEBUG,
+      logs,
+      code,
+      resErrMsg,
+    });
   }
 
   try {
@@ -100,29 +168,43 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       fatal: true,
       ignoreBOM: true,
     });
-    const { authenticatorAttachment, id, rawId, response, type } = pubKeyCred;
     const rawIdArr = new Uint8Array(rawId);
     const rawIdStr = rawIdArr.toString();
 
-    if (!(response instanceof AuthenticatorAttestationResponse)) {
-      throw new Error(
-        "The PublicKeyCredential's response is not an instance of AuthenticatorAttestationResponse"
-      );
+    if (!isResponseInstanceOfAAR(response, DEBUG)) {
+      const log1 =
+        "PublicKeyCredential's response is not an instance of AuthenticatorAttestationResponse";
+      const log2 = "body: " + body;
+      const logs = [log1, log2];
+      const code = 400;
+      const resErrMsg =
+        "The PublicKeyCredential's response is not an instance of AuthenticatorAttestationResponse";
+      return apiErrorResponse({
+        res,
+        body,
+        isLoggingEnabled: DEBUG,
+        logs,
+        code,
+        resErrMsg,
+      });
     }
 
-    const res = response as AuthenticatorAttestationResponse;
-    const attestationObjectArr = new Uint8Array(res.attestationObject);
+    const credRes = response as AuthenticatorAttestationResponse;
+    const attestationObject = credRes.attestationObject;
+    const attestationObjectArr = new Uint8Array(credRes.attestationObject);
     const attestationObjectStr = attestationObjectArr.toString();
-    const clientDataJSONArr = new Uint8Array(res.clientDataJSON);
+    const clientDataJSONArr = new Uint8Array(credRes.clientDataJSON);
     const clientDataJSONStr = clientDataJSONArr.toString();
     const clientExtensionResults = pubKeyCred.getClientExtensionResults();
     const jsonText = decoder.decode(clientDataJSONArr);
 
     const C = JSON.parse(jsonText);
 
-    console.log("");
-    console.log("C.type");
-    console.log(C.type);
+    if (DEBUG) {
+      console.log("");
+      console.log("C.type");
+      console.log(C.type);
+    }
 
     if (C.type !== "webauthn.create") {
       throw new Error(
@@ -135,30 +217,44 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const credChallStr = window.btoa(
       C.challenge.replace("-", "+").replace("_", "/")
     );
+    const challengeUint8 = convertStringToUint8Array(
+      credChallStr,
+      ",",
+      undefined
+    );
+
+    if (!challengeUint8) {
+      throw new Error(
+        "PublicKeyCredential's challenge couldn't be converted to Uint8Array"
+      );
+    }
+
     if (challengeUint8.toString() !== credChallStr) {
       throw new Error(
         "PublicKeyCredential's returned challenge does not match what was sent for credential creation"
       );
     }
 
-    if (C.origin !== rp) {
+    if (C.origin !== rpName) {
       throw new Error(
         "PublicKeyCredential's relying party doesn't match. Expected " +
-          rp +
+          rpName +
           " but received " +
           C.origin
       );
     }
 
-    // TokenBinding
-    console.log("");
-    console.log("C.tokenBinding.status");
-    console.log(C.tokenBinding.status);
+    if (DEBUG) {
+      // TokenBinding
+      console.log("");
+      console.log("C.tokenBinding.status");
+      console.log(C.tokenBinding.status);
+    }
 
-    const hash = crypto.subtle.digest("SHA-256", res.clientDataJSON);
+    const hash = crypto.subtle.digest("SHA-256", clientDataJSONArr);
 
     // CBOR decoding
-    res.attestationObject;
+    // attestationObject;
   } catch (e) {}
 
   // Sends a HTTP success code

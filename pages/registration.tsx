@@ -1,4 +1,12 @@
-import { useState, SyntheticEvent } from "react";
+import {
+  useState,
+  SyntheticEvent,
+  useMemo,
+  useEffect,
+  useRef,
+  ForwardedRef,
+  MutableRefObject,
+} from "react";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -19,58 +27,87 @@ import { GetServerSideProps } from "next";
 import NextLinkComposed from "../components/NextLinkComposed";
 
 import { getXataClient } from "../db/xata";
+import { useFormControl } from "@mui/material/FormControl";
+import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
+import EmailInput from "../components/EmailInput";
+
+import { convertStringToUint8Array } from "../util";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const xata = getXataClient();
   const { randomFillSync } = await import("node:crypto");
 
-  const rpName = "authn-playground";
-  const rpID = "authnplayground";
-  const userID = new Uint8Array(16);
-  self.crypto.getRandomValues(userID);
-  const userIDStr = userID.toString();
-  const challUint8 = new Uint8Array(32);
-  randomFillSync(challUint8);
+  const rpName = process.env.RP_NAME;
+  const rpID = process.env.RP_ID;
+  const DEBUG = process.env.DEBUG;
 
-  const challenge = challUint8.toString();
-
-  const record = await xata.db.nextauth_credentials.create({
-    user: { id: userIDStr },
-    challenge: challenge,
-  });
+  if (DEBUG) {
+    console.log("CAUTION: IN DEBUG MODE");
+  }
 
   return {
     props: {
-      userID,
-      challenge,
       rpName,
       rpID,
+      DEBUG,
     },
   };
 };
 
 const login = ({
-  userID,
-  challenge,
   rpName,
   rpID,
+  DEBUG,
 }: {
-  userID: Uint8Array;
-  challenge: string;
   rpName: string;
   rpID: string;
+  DEBUG: boolean;
 }) => {
   const { data: session, status } = useSession();
   const [savedCred, setSavedCred] = useState(false);
+  const ref = useRef<HTMLInputElement | null>(null);
+  let challengeUint8: Uint8Array;
+  let userID: Uint8Array;
+
+  if (DEBUG) {
+    console.log("CAUTION: IN DEBUG MODE");
+  }
+
   const isWebAuthnAvail = () => {
+    if (DEBUG) {
+      console.log("");
+      console.log("ref");
+      console.log(ref);
+    }
+    if (ref && ref.current) {
+      const cur = ref.current as unknown as HTMLElement;
+      if (DEBUG) {
+        console.log("");
+        console.log("cur");
+        console.log(cur);
+      }
+      // cur.focus();
+    }
     return window.PublicKeyCredential;
   };
-  const challengeUint8 = new Uint8Array(Buffer.from(challenge));
 
   const createPubKey = async (
+    userIDStr: string,
     email: string
   ): Promise<PublicKeyCredential | null> => {
-    const pubKeyOpt = {
+    const userIDUI8Arr = convertStringToUint8Array(userIDStr, "", 10);
+
+    if (!userIDUI8Arr) {
+      throw new Error(
+        "Didn't get a userID or one that could be converted to a Uint8Array"
+      );
+    }
+
+    if (!challengeUint8) {
+      throw new Error("Missing challenge");
+    }
+
+    const pubKeyOpt: PublicKeyCredentialCreationOptions = {
       // The challenge is produced by the server; see the Security Considerations
       challenge: challengeUint8,
 
@@ -81,7 +118,7 @@ const login = ({
 
       // User:
       user: {
-        id: userID,
+        id: userIDUI8Arr,
         name: email,
         displayName: email,
       },
@@ -138,7 +175,7 @@ const login = ({
       if (!isWebAuthnAvail) {
         throw new Error("WebAuthn isn't available on this browser/client.");
       }
-      pubKeyCred = await createPubKey(target.email.value);
+      pubKeyCred = await createPubKey(userID.toString(), target.email.value);
     } catch (e) {
       const err = e as Error;
       console.error("WebAuthn failed:", err.message);
@@ -153,13 +190,14 @@ const login = ({
       const attestationObjectStr = attestationObjectArr.toString();
       const clientDataJSONArr = new Uint8Array(res.clientDataJSON);
       const clientDataJSONStr = clientDataJSONArr.toString();
+      const challStr = challengeUint8.toString();
 
       // Prep data object for sending to api
       data = {
         email: target.email.value,
         pubKeyCred: {
-          authenticatorAttachment: authenticatorAttachment,
-          id: id,
+          authenticatorAttachment,
+          id,
           rawId: rawIdStr,
           response: {
             attestationObj: attestationObjectStr,
@@ -167,17 +205,11 @@ const login = ({
           },
           type: type,
         },
+        challenge: challStr,
       };
 
       // API endpoint where we send form data.
       endpoint = "/api/webauthn";
-    } else if (target.password.value) {
-      // Get data from the form.
-      data = {
-        email: target.email.value,
-        pubKeyCred: target.password.value,
-      };
-      endpoint = "/api/password";
     } else {
       console.error("No credential entered");
       return;
@@ -200,8 +232,10 @@ const login = ({
     // Send the form data to our forms API on Vercel and get a response.
     const response = await fetch(endpoint, options);
 
-    console.log("response");
-    console.log(response);
+    if (DEBUG) {
+      console.log("response");
+      console.log(response);
+    }
 
     // Get the response data from server as JSON.
     // If server returns the name submitted, that means the form works.
@@ -289,36 +323,21 @@ const login = ({
                 component="form"
                 onSubmit={handleSubmit}
                 noValidate
+                autoComplete="off"
                 sx={{ mt: 1 }}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                />
-                <FormControlLabel
+                <FormControl sx={{ width: "100%" }}>
+                  <InputLabel htmlFor="email">Email</InputLabel>
+                  <EmailInput />
+                </FormControl>
+                {/* <FormControlLabel
                   control={
                     <Checkbox
                       value="remember"
                       color="primary"
-                    />
+                      />
                   }
                   label="Remember me"
-                />
+                /> */}
                 <Button
                   type="submit"
                   fullWidth

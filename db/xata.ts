@@ -14,6 +14,8 @@ const tables = [
       { name: "emailVerified", type: "datetime" },
       { name: "name", type: "string" },
       { name: "image", type: "string" },
+      { name: "createdAt", type: "int", notNull: true, defaultValue: "0" },
+      { name: "cred", type: "link", link: { table: "nextauth_credentials" } },
     ],
   },
   {
