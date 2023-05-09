@@ -37,14 +37,6 @@ const EmailInput = () => {
   }, [focused]);
 
   return (
-    // <TextField
-    //   margin="normal"
-    //   required
-    //   fullWidth
-    //   id="email"
-    //   name="email"
-    //   value={focused}
-    // />
     <OutlinedInput
       required
       fullWidth
