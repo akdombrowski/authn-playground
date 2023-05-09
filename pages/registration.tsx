@@ -65,51 +65,65 @@ const login = ({
 }) => {
   const { data: session, status } = useSession();
   const [savedCred, setSavedCred] = useState(false);
-  const ref = useRef<HTMLInputElement | null>(null);
-  let challengeUint8: Uint8Array;
-  let userID: Uint8Array;
+  const challengeStr = useRef<string>("");
+  const userIDArrStr = useRef<string>("");
 
   if (DEBUG) {
     console.log("CAUTION: IN DEBUG MODE");
   }
 
+  const storeUserID = (uID: string) => {
+    userIDArrStr.current = uID;
+    console.log("");
+    console.log("userID stored");
+    console.log(userIDArrStr.current);
+  };
+
+  const storeChallenge = (challenge: string) => {
+    challengeStr.current = challenge;
+    console.log("");
+    console.log("challenge stored");
+    console.log(challengeStr.current);
+  };
+
   const isWebAuthnAvail = () => {
-    if (DEBUG) {
-      console.log("");
-      console.log("ref");
-      console.log(ref);
-    }
-    if (ref && ref.current) {
-      const cur = ref.current as unknown as HTMLElement;
-      if (DEBUG) {
-        console.log("");
-        console.log("cur");
-        console.log(cur);
-      }
-      // cur.focus();
-    }
     return window.PublicKeyCredential;
   };
 
   const createPubKey = async (
-    userIDStr: string,
     email: string
   ): Promise<PublicKeyCredential | null> => {
-    const userIDUI8Arr = convertStringToUint8Array(userIDStr, "", 10);
+    console.log("");
+    console.log("userIDArrStr");
+    console.log(userIDArrStr);
+    console.log("");
+    console.log("challengeStr.current");
+    console.log(challengeStr.current);
 
-    if (!userIDUI8Arr) {
+    const userID = await convertStringToUint8Array(
+      userIDArrStr.current,
+      ",",
+      10
+    );
+    const challenge = await convertStringToUint8Array(
+      challengeStr.current,
+      ",",
+      10
+    );
+
+    if (!userID) {
       throw new Error(
         "Didn't get a userID or one that could be converted to a Uint8Array"
       );
     }
 
-    if (!challengeUint8) {
+    if (!challenge) {
       throw new Error("Missing challenge");
     }
 
     const pubKeyOpt: PublicKeyCredentialCreationOptions = {
       // The challenge is produced by the server; see the Security Considerations
-      challenge: challengeUint8,
+      challenge: challenge,
 
       // Relying Party:
       rp: {
@@ -118,7 +132,7 @@ const login = ({
 
       // User:
       user: {
-        id: userIDUI8Arr,
+        id: userID,
         name: email,
         displayName: email,
       },
@@ -175,73 +189,78 @@ const login = ({
       if (!isWebAuthnAvail) {
         throw new Error("WebAuthn isn't available on this browser/client.");
       }
-      pubKeyCred = await createPubKey(userID.toString(), target.email.value);
+      pubKeyCred = await createPubKey(target.email.value);
+
+      if (pubKeyCred) {
+        console.log("");
+        console.log("pubKeyCred");
+        console.log(pubKeyCred);
+
+        const { authenticatorAttachment, id, rawId, response, type } =
+          pubKeyCred;
+        const rawIdArr = new Uint8Array(rawId);
+        const rawIdStr = rawIdArr.toString();
+        const res = response as AuthenticatorAttestationResponse;
+        const attestationObjectArr = new Uint8Array(res.attestationObject);
+        const attestationObjectStr = attestationObjectArr.toString();
+        const clientDataJSONArr = new Uint8Array(res.clientDataJSON);
+        const clientDataJSONStr = clientDataJSONArr.toString();
+        const challStr = challengeStr.toString();
+
+        // Prep data object for sending to api
+        data = {
+          email: target.email.value,
+          pubKeyCred: {
+            authenticatorAttachment,
+            id,
+            rawId: rawIdStr,
+            response: {
+              attestationObj: attestationObjectStr,
+              clientDataJSON: clientDataJSONStr,
+            },
+            type: type,
+          },
+          challenge: challStr,
+        };
+
+        // API endpoint where we send form data.
+        endpoint = "/api/webauthn";
+
+        // Send the data to the server in JSON format.
+        let jsonData = JSON.stringify(data);
+        // Form the request for sending data to the server.
+        const options = {
+          // The method is POST because we are sending data.
+          method: "POST",
+          // Tell the server we're sending JSON.
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // Body of the request is the JSON data we created above.
+          body: jsonData,
+        };
+
+        // Send the form data to our forms API on Vercel and get a response.
+        const webauthnBackendResponse = await fetch(endpoint, options);
+
+        if (DEBUG) {
+          console.log("webauthnBackendResponse");
+          console.log(webauthnBackendResponse);
+        }
+
+        // Get the response data from server as JSON.
+        // If server returns the name submitted, that means the form works.
+        const result = await webauthnBackendResponse.json();
+
+        signIn("webauthn", { result: JSON.stringify(result) });
+      } else {
+        console.error("No public key credential returned");
+        throw new Error("Missing public key credential");
+      }
     } catch (e) {
       const err = e as Error;
       console.error("WebAuthn failed:", err.message);
     }
-
-    if (pubKeyCred) {
-      const { authenticatorAttachment, id, rawId, response, type } = pubKeyCred;
-      const rawIdArr = new Uint8Array(rawId);
-      const rawIdStr = rawIdArr.toString();
-      const res = response as AuthenticatorAttestationResponse;
-      const attestationObjectArr = new Uint8Array(res.attestationObject);
-      const attestationObjectStr = attestationObjectArr.toString();
-      const clientDataJSONArr = new Uint8Array(res.clientDataJSON);
-      const clientDataJSONStr = clientDataJSONArr.toString();
-      const challStr = challengeUint8.toString();
-
-      // Prep data object for sending to api
-      data = {
-        email: target.email.value,
-        pubKeyCred: {
-          authenticatorAttachment,
-          id,
-          rawId: rawIdStr,
-          response: {
-            attestationObj: attestationObjectStr,
-            clientDataJSON: clientDataJSONStr,
-          },
-          type: type,
-        },
-        challenge: challStr,
-      };
-
-      // API endpoint where we send form data.
-      endpoint = "/api/webauthn";
-    } else {
-      console.error("No credential entered");
-      return;
-    }
-
-    // Send the data to the server in JSON format.
-    let jsonData = JSON.stringify(data);
-    // Form the request for sending data to the server.
-    const options = {
-      // The method is POST because we are sending data.
-      method: "POST",
-      // Tell the server we're sending JSON.
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // Body of the request is the JSON data we created above.
-      body: jsonData,
-    };
-
-    // Send the form data to our forms API on Vercel and get a response.
-    const response = await fetch(endpoint, options);
-
-    if (DEBUG) {
-      console.log("response");
-      console.log(response);
-    }
-
-    // Get the response data from server as JSON.
-    // If server returns the name submitted, that means the form works.
-    const result = await response.json();
-
-    signIn("webauthn", { result: JSON.stringify(result) });
   };
 
   return (
@@ -302,7 +321,10 @@ const login = ({
                 sx={{ mt: 1 }}>
                 <FormControl sx={{ width: "100%" }}>
                   <InputLabel htmlFor="email">Email</InputLabel>
-                  <EmailInput />
+                  <EmailInput
+                    storeUserID={storeUserID}
+                    storeChallenge={storeChallenge}
+                  />
                 </FormControl>
                 {/* <FormControlLabel
                   control={

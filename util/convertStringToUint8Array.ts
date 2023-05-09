@@ -1,8 +1,8 @@
-export const convertStringToUint8Array = (
+export const convertStringToUint8Array = async (
   str: string,
   splitOnValue: string,
   radix: number | undefined
-): Uint8Array | null => {
+): Promise<Uint8Array | null> => {
   let uInt8ArrayResult = null;
   // intentionally only using 2 equals signs
   // because null == undefined so if splitOnValue == null then it's also

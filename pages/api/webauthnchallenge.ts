@@ -7,6 +7,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const userIDUint8Arr = new Uint8Array(16);
   randomFillSync(userIDUint8Arr);
+  const userIDArrStr = userIDUint8Arr.toString();
   const userID = userIDUint8Arr.join("");
 
   const challUint8 = new Uint8Array(32);
@@ -33,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       challenge: challenge,
     });
     user.update({ cred: challID });
-    
+
     console.log("");
     console.log("user");
     console.log(user);
@@ -48,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 
-  res.status(200).json({ data: { challenge } });
+  res.status(200).json({ data: { userIDArrStr, challenge } });
 };
 
 export default handler;

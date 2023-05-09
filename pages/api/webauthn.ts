@@ -13,7 +13,7 @@ const isResponseInstanceOfAAR = (response: any, isLoggingEnabled: boolean) => {
   if (!(response instanceof AuthenticatorAttestationResponse)) {
     if (isLoggingEnabled) {
       console.log(
-        "response is not an isntance of AuthenticatorAttestationResponse"
+        "response is not an instance of AuthenticatorAttestationResponse"
       );
       console.log("response is of type: " + typeof response);
     }

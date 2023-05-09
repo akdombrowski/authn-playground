@@ -2,7 +2,13 @@ import { useFormControl } from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { useEffect } from "react";
 
-const EmailInput = () => {
+const EmailInput = ({
+  storeUserID,
+  storeChallenge,
+}: {
+  storeUserID: (userID: string) => void;
+  storeChallenge: (challenge: string) => void;
+}) => {
   const { focused } = useFormControl() || {};
 
   useEffect(() => {
@@ -18,6 +24,8 @@ const EmailInput = () => {
         const res = await response.json();
 
         console.log(res);
+        storeUserID(res.data.userIDArrStr);
+        storeChallenge(res.data.challenge);
       };
 
       getChall();
