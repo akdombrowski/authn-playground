@@ -1,16 +1,6 @@
-import Input from "@mui/material/Input";
 import { useFormControl } from "@mui/material/FormControl";
-import TextField from "@mui/material/TextField";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import {
-  ForwardedRef,
-  forwardRef,
-  useEffect,
-  useRef,
-  MutableRefObject,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect } from "react";
 
 const EmailInput = () => {
   const { focused } = useFormControl() || {};
