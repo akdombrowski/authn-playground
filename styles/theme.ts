@@ -22,6 +22,23 @@ const unresponsiveFontsTheme = createTheme({
   },
   palette: {
     mode: "dark",
+    primary: {
+      main: "#3685B5",
+      contrastText: "#f1dfbd",
+    },
+    secondary: {
+      main: "#575a4b",
+      contrastText: "#ffffff",
+    },
+    background: {
+      default: "#080708",
+    },
+    text: {
+      primary: "#cae9ff",
+    },
+    error: {
+      main: "#b86f52",
+    },
   },
 });
 

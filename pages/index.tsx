@@ -4,6 +4,8 @@ import Button from "@mui/material/Button";
 
 import Layout from "../components/layout";
 import NextLinkComposed from "../components/NextLinkComposed";
+import { SyntheticEvent } from "react";
+import { signIn } from "next-auth/react";
 
 export default function IndexPage() {
   return (
@@ -30,17 +32,39 @@ export default function IndexPage() {
         <Grid
           item
           container
-          justifyContent="center"
+          justifyContent="space-around"
           pt="3%"
           xs={12}>
+          {/* <Grid
+            item
+            container
+            justifyContent="center"
+            xs={6}> */}
           <Button
             component={NextLinkComposed}
             variant="contained"
             to={{ pathname: "/login" }}
             size="small"
-            sx={{ width: "50%" }}>
+            sx={{ width: "25%" }}
+            onClick={(e: SyntheticEvent) => {
+              e.preventDefault();
+              signIn();
+            }}>
             Login
           </Button>
+          {/* </Grid>
+          <Grid
+            item
+            xs={6}> */}
+          <Button
+            component={NextLinkComposed}
+            variant="contained"
+            to={{ pathname: "/registration" }}
+            size="small"
+            sx={{ width: "25%" }}>
+            Register
+          </Button>
+          {/* </Grid> */}
         </Grid>
       </Grid>
     </Layout>
