@@ -106,6 +106,9 @@ export const authOptions: NextAuthOptions = {
           console.log("");
           console.log("req");
           console.log(req);
+          console.log("");
+          console.log("end Credentials Provider authorize func");
+          console.log("");
         }
       },
     }),

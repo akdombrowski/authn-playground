@@ -252,7 +252,7 @@ const login = ({
         // If server returns the name submitted, that means the form works.
         const result = await webauthnBackendResponse.json();
 
-        signIn("webauthn", { result: JSON.stringify(result) });
+        // signIn("webauthn", { result: JSON.stringify(result) });
       } else {
         console.error("No public key credential returned");
         throw new Error("Missing public key credential");
