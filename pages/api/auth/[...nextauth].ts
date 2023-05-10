@@ -110,6 +110,8 @@ export const authOptions: NextAuthOptions = {
           console.log("end Credentials Provider authorize func");
           console.log("");
         }
+        // return true if authorized, else return false
+        return true;
       },
     }),
     Auth0Provider({
