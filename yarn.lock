@@ -761,6 +761,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/webappsec-credential-management@npm:^0.6.4":
+  version: 0.6.4
+  resolution: "@types/webappsec-credential-management@npm:0.6.4"
+  checksum: f73a44322dbc36d4b0034fe62b2aa0db01a85b4f778858b916b3d8955253f63764e823fbeecbfcbf7b12667b968b9023a388413f5cdf184c1a07743c4171c0a3
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/eslint-plugin@npm:^5.59.2":
   version: 5.59.2
   resolution: "@typescript-eslint/eslint-plugin@npm:5.59.2"
@@ -2872,6 +2879,7 @@ __metadata:
     "@types/node": ^18.16.3
     "@types/react": ^18.2.0
     "@types/react-dom": ^18.2.1
+    "@types/webappsec-credential-management": ^0.6.4
     "@typescript-eslint/eslint-plugin": ^5.59.2
     "@typescript-eslint/parser": ^5.59.2
     "@vercel/analytics": ^1.0.1

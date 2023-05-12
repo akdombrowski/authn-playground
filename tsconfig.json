@@ -19,10 +19,10 @@
     "strictNullChecks": true
   },
   "include": [
-    "process.d.ts",
-    "next-env.d.ts",
-    "next-auth.d.ts",
-    "vercel.d.ts",
+    "types/process.d.ts",
+    "types/next-env.d.ts",
+    "types/next-auth.d.ts",
+    "types/vercel.d.ts",
     "**/*.ts",
     "**/*.tsx"
   ],

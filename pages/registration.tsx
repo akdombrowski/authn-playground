@@ -31,7 +31,7 @@ import { useFormControl } from "@mui/material/FormControl";
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
 import EmailInput from "../components/EmailInput";
 
-import { convertStringToUint8Array } from "../util";
+import { convertStringToUint8Array, createWebAuthnPubKeyCred } from "../util";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const xata = getXataClient();
@@ -90,91 +90,6 @@ const login = ({
     return window.PublicKeyCredential;
   };
 
-  const createPubKey = async (
-    email: string
-  ): Promise<PublicKeyCredential | null> => {
-    console.log("");
-    console.log("userIDArrStr");
-    console.log(userIDArrStr);
-    console.log("");
-    console.log("challengeStr.current");
-    console.log(challengeStr.current);
-
-    const userID = await convertStringToUint8Array(
-      userIDArrStr.current,
-      ",",
-      10
-    );
-    const challenge = await convertStringToUint8Array(
-      challengeStr.current,
-      ",",
-      10
-    );
-
-    if (!userID) {
-      throw new Error(
-        "Didn't get a userID or one that could be converted to a Uint8Array"
-      );
-    }
-
-    if (!challenge) {
-      throw new Error("Missing challenge");
-    }
-
-    const pubKeyOpt: PublicKeyCredentialCreationOptions = {
-      // The challenge is produced by the server; see the Security Considerations
-      challenge: challenge,
-
-      // Relying Party:
-      rp: {
-        name: rpName,
-      },
-
-      // User:
-      user: {
-        id: userID,
-        name: email,
-        displayName: email,
-      },
-
-      // This Relying Party will accept either an ES256 or RS256 credential, but
-      // prefers an RS256 credential.
-      pubKeyCredParams: [
-        {
-          type: "public-key",
-          alg: -257, // Value registered by this specification for "RS256"
-        } as PublicKeyCredentialParameters,
-      ],
-
-      authenticatorSelection: {
-        // UV required.
-        userVerification: "required" as UserVerificationRequirement,
-      },
-
-      timeout: 300000, // 5 minutes
-      excludeCredentials: [
-        // Don’t re-register any authenticator that has one of these credentials
-      ],
-
-      // Make excludeCredentials check backwards compatible with credentials registered with U2F
-      extensions: {},
-    };
-
-    try {
-      const pubKeyCred = await createCred(pubKeyOpt);
-      return pubKeyCred as PublicKeyCredential;
-    } catch (e: any) {
-      console.error("failed to create webauthn cred");
-      console.error(e.message);
-      return null;
-    }
-  };
-
-  const createCred = async (pubKeyOpt: PublicKeyCredentialCreationOptions) => {
-    // Note: The following call will cause the authenticator to display UI.
-    return navigator.credentials.create({ publicKey: pubKeyOpt });
-  };
-
   // Handles the submit event on form submit.
   const handleSubmit = async (event: SyntheticEvent) => {
     // Stop the form from submitting and refreshing the page.
@@ -189,7 +104,12 @@ const login = ({
       if (!isWebAuthnAvail) {
         throw new Error("WebAuthn isn't available on this browser/client.");
       }
-      pubKeyCred = await createPubKey(target.email.value);
+      pubKeyCred = await createWebAuthnPubKeyCred({
+        userIDArrayStr: userIDArrStr.current,
+        challengeStr: challengeStr.current,
+        email: target.email.value,
+        rpName,
+      });
 
       if (pubKeyCred) {
         console.log("");
