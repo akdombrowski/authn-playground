@@ -170,7 +170,7 @@ const login = ({
                   type="hidden"
                   id="webauthn"
                   autoComplete="webauthn"
-                  sx={{border: 0}}
+                  sx={{ border: 0 }}
                 />
                 <FormControlLabel
                   control={
